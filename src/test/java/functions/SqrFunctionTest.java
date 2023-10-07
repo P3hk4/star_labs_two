@@ -9,7 +9,6 @@ class SqrFunctionTest {
     @Test
     void apply() {
         SqrFunction sqrFunction = new SqrFunction();
-        double num = 14.55D;
-        assertEquals(num*num, sqrFunction.apply(num));
+        assertEquals(14.55D*14.55D, sqrFunction.apply(14.55D));
     }
 }
