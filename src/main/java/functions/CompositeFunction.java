@@ -1,4 +1,4 @@
 package functions;
 
-public class CompositeFunction {
+public class CompositeFunction implements MathFunction {
 }
