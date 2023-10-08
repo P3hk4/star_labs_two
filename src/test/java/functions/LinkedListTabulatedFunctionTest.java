@@ -114,4 +114,12 @@ class LinkedListTabulatedFunctionTest {
         assertNotEquals(0, linkedListTabulatedFunction1.extrapolateLeft(1));
     }
 
+    @Test
+    void apply(){
+        SqrFunction sqrFunction = new SqrFunction();
+        LinkedListTabulatedFunction listTabulatedFunction = new LinkedListTabulatedFunction(sqrFunction, 10,100,90);
+        assertEquals(10198.988764044945, listTabulatedFunction.apply(101));
+        assertEquals(78.98876404494382, listTabulatedFunction.apply(9));
+
+    }
 }
