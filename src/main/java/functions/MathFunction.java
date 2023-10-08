@@ -1,5 +1,9 @@
 package functions;
 
 public interface MathFunction {
-    public double apply(double x);
+    double apply(double x);
+
+    default CompositeFunction andThen(MathFunction afterFunction){
+        return new CompositeFunction(this::apply,afterFunction);
+    }
 }
