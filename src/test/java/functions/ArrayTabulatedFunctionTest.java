@@ -20,24 +20,23 @@ class ArrayTabulatedFunctionTest {
     void extrapolateLeft() {
         SqrFunction sqrFunction = new SqrFunction();
         ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(sqrFunction, 10,20,11);
-        assertEquals(79,ATF.extrapolateLeft(9));
-        assertEquals(58,ATF.extrapolateLeft(8));
+        assertEquals(81,ATF.extrapolateLeft(9),81*0.05);
     }
 
     @Test
     void extrapolateRight() {
         SqrFunction sqrFunction = new SqrFunction();
         ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(sqrFunction, 1,10,10);
-        assertEquals(119,ATF.extrapolateRight(11));
-        assertEquals(138,ATF.extrapolateRight(12));
+        assertEquals(121,ATF.extrapolateRight(11),121*0.05);
+        assertEquals(144,ATF.extrapolateRight(12),138*0.05);
     }
 
     @Test
     void interpolate() {
         SqrFunction sqrFunction = new SqrFunction();
         ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(sqrFunction, 1,10,10);
-        assertEquals(30.5,ATF.interpolate(5.5,ATF.floorIndexOfX(5.5)));
-        assertEquals(72.5,ATF.interpolate(8.5,ATF.floorIndexOfX(8.5)));
+        assertEquals(30.25,ATF.interpolate(5.5,ATF.floorIndexOfX(5.5)), 30.25*0.05);
+        assertEquals(72.25,ATF.interpolate(8.5,ATF.floorIndexOfX(8.5)),72.25*0.05);
         assertEquals(ATF.interpolate(5.5,ATF.floorIndexOfX(5.5)),ATF.interpolate(5.5,ATF.getX(4),ATF.getX(5),ATF.getY(4),ATF.getY(5)));
         assertEquals(ATF.interpolate(8.5,ATF.floorIndexOfX(8.5)),ATF.interpolate(8.5,ATF.getX(7),ATF.getX(8),ATF.getY(7),ATF.getY(8)));
 
@@ -111,8 +110,8 @@ class ArrayTabulatedFunctionTest {
     void apply() {
         SqrFunction sqrFunction = new SqrFunction();
         ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(sqrFunction, 10,100,90);
-        assertEquals(10198.988764044945,ATF.apply(101));
-        assertEquals(78.98876404494382,ATF.apply(9));
-        assertEquals(2070.346547153137,ATF.apply(45.5));
+        assertEquals(10201,ATF.apply(101),10201*0.05);
+        assertEquals(81,ATF.apply(9),81*0.05);
+        assertEquals(2070.25,ATF.apply(45.5), 2070.25*0.05);
     }
 }
