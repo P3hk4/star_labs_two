@@ -6,10 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ArrayTabulatedFunctionTest {
 
-//    for (int i = 0; i < ATF.getCount(); ++i){
-//        System.out.println(ATF.getX(i) +  "  -  " + ATF.getY(i));
-//    }
-
     @Test
     void floorIndexOfX() {
         SqrFunction sqrFunction = new SqrFunction();
@@ -32,9 +28,6 @@ class ArrayTabulatedFunctionTest {
     void extrapolateRight() {
         SqrFunction sqrFunction = new SqrFunction();
         ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(sqrFunction, 1,10,10);
-            for (int i = 0; i < ATF.getCount(); ++i){
-        System.out.println(ATF.getX(i) +  "  -  " + ATF.getY(i));
-    }
         assertEquals(119,ATF.extrapolateRight(11));
         assertEquals(138,ATF.extrapolateRight(12));
     }
@@ -43,9 +36,6 @@ class ArrayTabulatedFunctionTest {
     void interpolate() {
         SqrFunction sqrFunction = new SqrFunction();
         ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(sqrFunction, 1,10,10);
-        for (int i = 0; i < ATF.getCount(); ++i){
-            System.out.println(ATF.getX(i) +  "  -  " + ATF.getY(i));
-        }
         assertEquals(30.5,ATF.interpolate(5.5,ATF.floorIndexOfX(5.5)));
         assertEquals(72.5,ATF.interpolate(8.5,ATF.floorIndexOfX(8.5)));
         assertEquals(ATF.interpolate(5.5,ATF.floorIndexOfX(5.5)),ATF.interpolate(5.5,ATF.getX(4),ATF.getX(5),ATF.getY(4),ATF.getY(5)));
@@ -121,8 +111,8 @@ class ArrayTabulatedFunctionTest {
     void apply() {
         SqrFunction sqrFunction = new SqrFunction();
         ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(sqrFunction, 10,100,90);
-        System.out.println(ATF.apply(101));
-        System.out.println(ATF.apply(9));
-        System.out.println(ATF.apply(45.5));
+        assertEquals(10198.988764044945,ATF.apply(101));
+        assertEquals(78.98876404494382,ATF.apply(9));
+        assertEquals(2070.346547153137,ATF.apply(45.5));
     }
 }
