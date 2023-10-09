@@ -41,11 +41,18 @@ UnitFunction unitFunction = new UnitFunction();
         CompositeFunction multiFunction1 = new CompositeFunction(logMathFunction,sqrFunction);
         assertEquals(4,multiFunction1.apply(Math.E*Math.E));
 
-
         for (int i = 0 ; i < ATF.getCount(); ++i ){
             assertEquals(ATF.getX(i),LTF.getX(i));
             assertEquals(ATF.getY(i),LTF.getY(i));
         }
+
+        MathFunction functionA = logMathFunction.andThen(ATF);
+        assertEquals(2.3, logMathFunction.apply(10), 2.3*0.05);
+        assertEquals(5.29,functionA.apply(10), 5.29*0.05 );
+
+        LinkedListTabulatedFunction FF = new LinkedListTabulatedFunction(sqrFunction,0,2,20);
+        MathFunction functionL = atanMathFunction.andThen(FF);
+        assertEquals(0.61, functionL.apply(1), 0.61*0.05);
 
     }
 }
