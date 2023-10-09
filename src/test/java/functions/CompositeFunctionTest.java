@@ -55,4 +55,23 @@ UnitFunction unitFunction = new UnitFunction();
         assertEquals(0.61, functionL.apply(1), 0.61*0.05);
 
     }
+
+    @Test
+    void andThenForList(){
+        MathFunction atan_list = atanMathFunction.andThen(linkedListTabulatedFunction);
+        MathFunction log_list = logMathFunction.andThen(linkedListTabulatedFunction);
+
+        MathFunction list_atan = linkedListTabulatedFunction.andThen(atanMathFunction);
+        MathFunction list_log = linkedListTabulatedFunction.andThen(logMathFunction);
+
+        assertEquals(0, atan_list.apply(0));
+        assertEquals(1, log_list.apply(Math.E));
+        assertEquals(PI/4, list_atan.apply(1));
+        assertNotEquals(0, list_atan.apply(2.7));
+        assertEquals(0, list_log.apply(1));
+
+
+    }
+
+
 }
