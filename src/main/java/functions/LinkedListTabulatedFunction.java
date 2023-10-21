@@ -1,7 +1,9 @@
 package functions;
 
-public class LinkedListTabulatedFunction extends AbstractTabulatedFunction{
-    class Node {
+import java.util.Objects;
+
+public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Cloneable{
+    static class Node implements Cloneable{
         Node next;
         Node prev;
         double x;
@@ -11,7 +13,35 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction{
             this.x = x;
             this.y = y;
         }
+
+        @Override
+        public String toString(){
+            String str_x = String.valueOf(x);
+            String str_y = String.valueOf(y);
+            return ("(" + str_x +"; "+ str_y +")");
+        }
+
+        @Override
+        public boolean equals(Object o){
+            if (this == o) return true;
+            return (o!=null && getClass() == o.getClass() && Double.compare(x, ((Node) o).x) == 0 && Double.compare(y, ((Node) o).y) == 0);
+        }
+
+        @Override
+        public int hashCode(){
+            return Objects.hash(x,y);
+        }
+
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            Node clone = (Node) super.clone();
+            clone.next = null;
+            clone.prev = null;
+            return clone;
+        }
+
     }
+
 
     private int count;
     private Node head;
@@ -173,5 +203,63 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction{
         else if (x > rightBound()) return extrapolateRight(x);
         else if (indexOfX(x) != -1) return getY(indexOfX(x));
         else return interpolate(x,floorIndexOfX(x));
+    }
+
+    @Override
+    public String toString(){
+        Node elem = head;
+        String result = elem.toString();
+        result += " ";
+        while(elem != head.prev)
+        {
+            elem = elem.next;
+            result += elem.toString();
+            result += " ";
+        }
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+        Node elem = head;
+        
+        if (this.getCount() == ((LinkedListTabulatedFunction)o).getCount() && this.getClass() == o.getClass()){
+            Node o_elem = ((LinkedListTabulatedFunction)o).head;
+            do{
+                if (!elem.equals(o_elem)) return false;
+                elem = elem.next;
+                o_elem = o_elem.next;
+            }while(elem != head);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode(){
+        int result = 0;
+        Node elem = head;
+        do {
+            result = 31 * result + elem.hashCode();
+            elem = elem.next;
+        }while(elem != head);
+        return result;
+    }
+
+    @Override
+    public Object clone(){
+        double[] x_values_clone = new double[count];
+        double[] y_values_clone = new double[count];
+        Node elem = head;
+        int i = 0;
+        do {
+            x_values_clone[i] = elem.x;
+            y_values_clone[i] = elem.y;
+            elem = elem.next;
+            ++i;
+        }while(elem != head);
+        LinkedListTabulatedFunction clone = new LinkedListTabulatedFunction(x_values_clone, y_values_clone);
+        return clone;
     }
 }

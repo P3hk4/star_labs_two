@@ -1,6 +1,9 @@
 package functions;
 
+
 import org.junit.jupiter.api.Test;
+
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,8 +12,12 @@ class LinkedListTabulatedFunctionTest {
     double[] yValue = {1, 2, 3, 4, 5};
     double[] xValue2 = {5};
     double[] yValue2 = {2};
+
+    double[] xValue3 = {5, 7};
+    double[] yValue3 = {2, 7};
     LinkedListTabulatedFunction linkedListTabulatedFunction=new LinkedListTabulatedFunction(xValue,yValue);
     LinkedListTabulatedFunction linkedListTabulatedFunction1=new LinkedListTabulatedFunction(xValue2,yValue2);
+    LinkedListTabulatedFunction linkedListTabulatedFunction2=new LinkedListTabulatedFunction(xValue3,yValue3);
 
     @Test
     void getCount() {
@@ -122,4 +129,83 @@ class LinkedListTabulatedFunctionTest {
         assertEquals(78.98876404494382, listTabulatedFunction.apply(9));
 
     }
+
+    @Test
+    void nodeToString(){
+        LinkedListTabulatedFunction.Node node = new LinkedListTabulatedFunction.Node(1, -1);
+        assertEquals("(1.0; -1.0)", node.toString());
+        assertNotEquals("(1.0; 1.0)", node.toString());
+    }
+
+    @Test
+    void nodeEquals(){
+        LinkedListTabulatedFunction.Node node1 = new LinkedListTabulatedFunction.Node(1, -1);
+        LinkedListTabulatedFunction.Node node2 = new LinkedListTabulatedFunction.Node(1, -1);
+        LinkedListTabulatedFunction.Node node3 = new LinkedListTabulatedFunction.Node(10, -1);
+
+        assertTrue(node1.equals(node1));
+        assertTrue(node1.equals(node2));
+        assertTrue(node2.equals(node1));
+        assertFalse(node1.equals(node3));
+
+    }
+
+    @Test
+    void nodeHash(){
+        LinkedListTabulatedFunction.Node node1 = new LinkedListTabulatedFunction.Node(1, -1);
+        LinkedListTabulatedFunction.Node node2 = new LinkedListTabulatedFunction.Node(-1, 1);
+        LinkedListTabulatedFunction.Node node3 = new LinkedListTabulatedFunction.Node(1, 1);
+
+        assertEquals(node2.hashCode(), node1.hashCode());
+        assertNotEquals(node1.hashCode(), node3.hashCode());
+
+
+    }
+
+    @Test
+    void nodeClone() throws CloneNotSupportedException {
+        LinkedListTabulatedFunction.Node node = new LinkedListTabulatedFunction.Node(1.5, -1.5);
+        Object clone = node.clone();
+        assertTrue(node.equals(clone));
+    }
+
+    @Test
+    void toStringList(){
+        assertEquals("(1.0; 1.0) (2.0; 2.0) (2.7; 3.0) (2.9; 4.0) (5.0; 5.0) ", linkedListTabulatedFunction.toString());
+        assertEquals("(5.0; 2.0) ",linkedListTabulatedFunction1.toString() );
+        assertNotEquals("(5.0; 5.0) ", linkedListTabulatedFunction1.toString());
+        assertEquals("(5.0; 2.0) (7.0; 7.0) ",linkedListTabulatedFunction2.toString() );
+    }
+
+    @Test
+    void equalsList(){
+        double[] xValue11 = {1, 2, 2.7, 2.9, 5};
+        double[] yValue11 = {1, 2, 3, 4, 5};
+        double[] xValue22 = {1, 2,};
+        double[] yValue22 = {1, 2,};
+        LinkedListTabulatedFunction linkedListTabulatedFunction11=new LinkedListTabulatedFunction(xValue11,yValue11);
+        LinkedListTabulatedFunction linkedListTabulatedFunction22=new LinkedListTabulatedFunction(xValue22,yValue22);
+        assertTrue(linkedListTabulatedFunction.equals(linkedListTabulatedFunction11));
+        assertTrue(linkedListTabulatedFunction.equals(linkedListTabulatedFunction));
+        assertFalse(linkedListTabulatedFunction.equals(linkedListTabulatedFunction1));
+        assertFalse(linkedListTabulatedFunction.equals(linkedListTabulatedFunction22));
+    }
+
+    @Test
+    void hashList(){
+        double[] xValue11 = {1, 2, 2.7, 2.9, 5};
+        double[] yValue11 = {1, 2, 3, 4, 5};
+        LinkedListTabulatedFunction linkedListTabulatedFunction11=new LinkedListTabulatedFunction(xValue11,yValue11);
+        assertEquals(linkedListTabulatedFunction.hashCode(), linkedListTabulatedFunction11.hashCode());
+        assertNotEquals(linkedListTabulatedFunction.hashCode(), linkedListTabulatedFunction2.hashCode());
+
+    }
+
+    @Test
+    void cloneList(){
+        Object test = linkedListTabulatedFunction.clone();
+        assertTrue(linkedListTabulatedFunction.equals(test));
+    }
+
+
 }
