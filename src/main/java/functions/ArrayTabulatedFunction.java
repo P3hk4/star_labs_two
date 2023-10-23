@@ -1,8 +1,9 @@
 package functions;
 
 import java.util.Arrays;
+import java.util.Objects;
 
-public class ArrayTabulatedFunction extends AbstractTabulatedFunction{
+public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Cloneable{
 
     protected double [] xValues;
 
@@ -39,29 +40,21 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction{
     @Override
     protected int floorIndexOfX(double x) {
         if (x < this.leftBound()) return 0;
-        if (x > this.rightBound()) return count-1;               //Выход из поиска при искомом значении вне границ значений массива
+        if (x > this.rightBound()) return count-1;
 
-        // Создаем границы со значениями индексов крайних значений массива
         int leftBorder = 0;
         int rightBorder = this.xValues.length - 1;
-        // пока левая и правая границы поиска не равны
         while (leftBorder <= rightBorder) {
-            // индекс текущего элемента находится посередине
-            int middle = (leftBorder + rightBorder) / 2;    //Находим центральный элемент массива
-            double current = this.xValues[middle];    //Находим текущий элемент массива
-
+            int middle = (leftBorder + rightBorder) / 2;
+            double current = this.xValues[middle];
             if (current == x) {
-                // нашли элемент - возвращаем его индекс
                 return middle;
             } else if (current < x) {
-                // текущий элемент меньше искомого - сдвигаем левую границу
                 leftBorder = middle + 1;
             } else {
-                // иначе сдвигаем правую границу
                 rightBorder = middle - 1;
             }
         }
-        // проверили весь массив, но не нашли элемент
         return leftBorder-1;
     }
 
@@ -180,5 +173,34 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction{
         else if (x > rightBound()) return extrapolateRight(x);
         else if (indexOfX(x) != -1) return getY(indexOfX(x));
         else return interpolate(x,floorIndexOfX(x));
+    }
+
+    @Override
+    public String toString() {
+        return "{xValues=" + Arrays.toString(xValues) +
+                ", yValues=" + Arrays.toString(yValues) +
+                ", count=" + count +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ArrayTabulatedFunction) || (((ArrayTabulatedFunction) obj).count != this.count)) return false;
+        for (int i = 0 ; i < this.count; ++i) {
+            if (this.xValues[i] != ((ArrayTabulatedFunction) obj).xValues[i]) return false;
+            if (this.yValues[i] != ((ArrayTabulatedFunction) obj).yValues[i]) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(xValues,yValues,count);
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ArrayTabulatedFunction clone = (ArrayTabulatedFunction) super.clone();
+        return clone;
     }
 }
