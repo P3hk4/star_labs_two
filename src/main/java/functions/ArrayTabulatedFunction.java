@@ -185,6 +185,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) return false;
         if (!(obj instanceof ArrayTabulatedFunction) || (((ArrayTabulatedFunction) obj).count != this.count)) return false;
         for (int i = 0 ; i < this.count; ++i) {
             if (this.xValues[i] != ((ArrayTabulatedFunction) obj).xValues[i]) return false;
@@ -199,8 +200,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        ArrayTabulatedFunction clone = (ArrayTabulatedFunction) super.clone();
-        return clone;
+    public Object clone() {
+        return new ArrayTabulatedFunction(this.xValues, this.yValues);
     }
 }

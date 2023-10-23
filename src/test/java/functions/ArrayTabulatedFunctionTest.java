@@ -156,7 +156,7 @@ class ArrayTabulatedFunctionTest {
     }
 
     @Test
-    void testClone() throws CloneNotSupportedException {
+    void testClone() {
         SqrFunction sqrFunction = new SqrFunction();
         ArrayTabulatedFunction firstArrayTabulatedFunction = new ArrayTabulatedFunction(sqrFunction, 1,10,10);
         ArrayTabulatedFunction firstArrayTabulatedFunctionClone = (ArrayTabulatedFunction) firstArrayTabulatedFunction.clone();
