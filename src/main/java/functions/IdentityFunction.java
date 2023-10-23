@@ -22,7 +22,7 @@ public class IdentityFunction implements MathFunction, Cloneable{
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public Object clone() {
+        return new IdentityFunction();
     }
 }
