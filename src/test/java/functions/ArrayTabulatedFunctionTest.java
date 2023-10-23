@@ -124,4 +124,42 @@ class ArrayTabulatedFunctionTest {
         assertEquals(81,ATF.apply(9),81*0.05);
         assertEquals(2070.25,ATF.apply(45.5), 2070.25*0.05);
     }
+
+    @Test
+    void testToString() {
+        SqrFunction sqrFunction = new SqrFunction();
+        ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(sqrFunction, 1,10,10);
+        System.out.println(ATF.toString());
+    }
+
+
+    @Test
+    void testEquals() {
+        SqrFunction sqrFunction = new SqrFunction();
+        ArrayTabulatedFunction firstArrayTabulatedFunction = new ArrayTabulatedFunction(sqrFunction, 1,10,10);
+        double[] X = {1,2,3,4,5,6,7,8,9,10};
+        double[] Y = {1,4,9,16,25,36,49,64,81,100};
+        ArrayTabulatedFunction secondArrayTabulatedFunction = new ArrayTabulatedFunction(X,Y);
+        ArrayTabulatedFunction thirdArrayTabulatedFunction = new ArrayTabulatedFunction(sqrFunction, 1,100,100);
+        assertTrue(firstArrayTabulatedFunction.equals(secondArrayTabulatedFunction));
+        assertFalse(firstArrayTabulatedFunction.equals(thirdArrayTabulatedFunction));
+    }
+
+    @Test
+    void testHashCode() {
+        SqrFunction sqrFunction = new SqrFunction();
+        ArrayTabulatedFunction firstArrayTabulatedFunction = new ArrayTabulatedFunction(sqrFunction, 1,10,10);
+        ArrayTabulatedFunction firstArrayTabulatedFunctionCopy = firstArrayTabulatedFunction;
+        ArrayTabulatedFunction secondArrayTabulatedFunction = new ArrayTabulatedFunction(sqrFunction, 1,10,10);
+        assertEquals(firstArrayTabulatedFunction.hashCode(), firstArrayTabulatedFunctionCopy.hashCode());
+        assertNotEquals(firstArrayTabulatedFunction.hashCode(), secondArrayTabulatedFunction.hashCode());
+    }
+
+    @Test
+    void testClone() throws CloneNotSupportedException {
+        SqrFunction sqrFunction = new SqrFunction();
+        ArrayTabulatedFunction firstArrayTabulatedFunction = new ArrayTabulatedFunction(sqrFunction, 1,10,10);
+        ArrayTabulatedFunction firstArrayTabulatedFunctionClone = (ArrayTabulatedFunction) firstArrayTabulatedFunction.clone();
+        assertTrue(firstArrayTabulatedFunction.equals(firstArrayTabulatedFunctionClone));
+    }
 }
