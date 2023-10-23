@@ -7,6 +7,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class ArrayTabulatedFunctionTest {
 
     @Test
+    void ArrayTabulatedFunction() {
+        double[] X = {1,2,3,4,5,6,7,8,9,10};
+        double[] Y = {1,4,9,16,25,36,49,64,81,100};
+        ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(X,Y);
+        assertEquals(4,ATF.apply(2));
+        assertEquals(36,ATF.apply(6));
+        assertEquals(81,ATF.apply(9));
+    }
+
+    @Test
     void floorIndexOfX() {
         SqrFunction sqrFunction = new SqrFunction();
         ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(sqrFunction, 1,100,100);

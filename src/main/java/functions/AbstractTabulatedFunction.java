@@ -11,5 +11,4 @@ public abstract class AbstractTabulatedFunction implements TabulatedFunction {
     protected abstract double interpolate(double x, int floorIndex);
 
     protected abstract double interpolate(double x, double leftX, double rightX, double leftY, double rightY);
-
 }
