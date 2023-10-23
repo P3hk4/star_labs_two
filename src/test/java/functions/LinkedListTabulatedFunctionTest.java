@@ -143,10 +143,12 @@ class LinkedListTabulatedFunctionTest {
         LinkedListTabulatedFunction.Node node2 = new LinkedListTabulatedFunction.Node(1, -1);
         LinkedListTabulatedFunction.Node node3 = new LinkedListTabulatedFunction.Node(10, -1);
 
+
         assertTrue(node1.equals(node1));
         assertTrue(node1.equals(node2));
         assertTrue(node2.equals(node1));
         assertFalse(node1.equals(node3));
+
 
     }
 
@@ -189,6 +191,7 @@ class LinkedListTabulatedFunctionTest {
         assertTrue(linkedListTabulatedFunction.equals(linkedListTabulatedFunction));
         assertFalse(linkedListTabulatedFunction.equals(linkedListTabulatedFunction1));
         assertFalse(linkedListTabulatedFunction.equals(linkedListTabulatedFunction22));
+        assertFalse(linkedListTabulatedFunction22.equals(null));
     }
 
     @Test
