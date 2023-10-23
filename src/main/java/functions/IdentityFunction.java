@@ -1,5 +1,7 @@
 package functions;
 
+import java.util.Objects;
+
 public class IdentityFunction implements MathFunction, Cloneable{
     public double apply(double x) {
         return x;
