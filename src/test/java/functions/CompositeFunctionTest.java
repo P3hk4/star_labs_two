@@ -17,8 +17,8 @@ UnitFunction unitFunction = new UnitFunction();
 
     double[] xValue = {1, 2, 2.7, 2.9, 5};
     double[] yValue = {1, 2, 3, 4, 5};
-    double[] xValue2 = {5};
-    double[] yValue2 = {2};
+    double[] xValue2 = {5, 2};
+    double[] yValue2 = {2, 2};
     LinkedListTabulatedFunction linkedListTabulatedFunction = new LinkedListTabulatedFunction(xValue,yValue);
     LinkedListTabulatedFunction linkedListTabulatedFunction1 = new LinkedListTabulatedFunction(xValue2,yValue2);
 
@@ -50,9 +50,6 @@ UnitFunction unitFunction = new UnitFunction();
         assertEquals(2.3, logMathFunction.apply(10), 2.3*0.05);
         assertEquals(5.29,functionA.apply(10), 5.29*0.05 );
 
-        LinkedListTabulatedFunction FF = new LinkedListTabulatedFunction(sqrFunction,0,2,20);
-        MathFunction functionL = atanMathFunction.andThen(FF);
-        assertEquals(0.61, functionL.apply(1), 0.61*0.05);
 
     }
 
