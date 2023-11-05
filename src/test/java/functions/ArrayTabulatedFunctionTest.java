@@ -22,7 +22,7 @@ class ArrayTabulatedFunctionTest {
         ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(sqrFunction, 1,100,100);
         assertEquals(15,ATF.floorIndexOfX(16.5));
         assertEquals(99,ATF.floorIndexOfX(110));
-        assertEquals(0,ATF.floorIndexOfX(-5));
+
 
     }
 
@@ -162,4 +162,78 @@ class ArrayTabulatedFunctionTest {
         ArrayTabulatedFunction firstArrayTabulatedFunctionClone = (ArrayTabulatedFunction) firstArrayTabulatedFunction.clone();
         assertTrue(firstArrayTabulatedFunction.equals(firstArrayTabulatedFunctionClone));
     }
+
+    @Test
+    void constructorOneEx(){
+        double[] X = {1};
+        double[] Y = {1};
+        assertThrows(IllegalArgumentException.class, () ->{
+            ArrayTabulatedFunction atf = new ArrayTabulatedFunction(X,Y);
+        });
+    }
+
+    @Test
+    void constructorTwoEx(){
+        AtanMathFunction atan = new AtanMathFunction();
+        assertThrows(IllegalArgumentException.class, () ->{
+            ArrayTabulatedFunction atf = new ArrayTabulatedFunction(atan, 1, 10, 1);
+        });
+    }
+
+    @Test
+    void floorIndexOfXex(){
+        double[] X = {1,2,3};
+        double[] Y = {1,4,9};
+        ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(X,Y);
+        assertThrows(IllegalArgumentException.class, () ->{
+            ATF.floorIndexOfX(0);
+        });
+    }
+    @Test
+    void getXex(){
+        double[] X = {1,2,3};
+        double[] Y = {1,4,9};
+        ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(X,Y);
+        assertThrows(IllegalArgumentException.class, () ->{
+            ATF.getX(3);
+        });
+    }
+    @Test
+    void getYex(){
+        double[] X = {1,2,3};
+        double[] Y = {1,4,9};
+        ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(X,Y);
+        assertThrows(IllegalArgumentException.class, () ->{
+            ATF.getY(-1);
+        });
+    }
+
+    @Test
+    void setYex(){
+        double[] X = {1,2,3};
+        double[] Y = {1,4,9};
+        ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(X,Y);
+        assertThrows(IllegalArgumentException.class, () ->{
+            ATF.setY(5,5.5);
+        });
+    }
+    @Test
+    void indexOfXex(){
+        double[] X = {1,2,3};
+        double[] Y = {1,4,9};
+        ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(X,Y);
+        assertThrows(IllegalArgumentException.class, () ->{
+            ATF.indexOfX(-1.5);
+        });
+    }
+    @Test
+    void indexOfYex(){
+        double[] X = {1,2,3};
+        double[] Y = {1,4,9};
+        ArrayTabulatedFunction ATF = new ArrayTabulatedFunction(X,Y);
+        assertThrows(IllegalArgumentException.class, () ->{
+            ATF.getX(-2);
+        });
+    }
+
 }

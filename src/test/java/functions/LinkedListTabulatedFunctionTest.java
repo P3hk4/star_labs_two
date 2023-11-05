@@ -3,6 +3,7 @@ package functions;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,13 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class LinkedListTabulatedFunctionTest {
     double[] xValue = {1, 2, 2.7, 2.9, 5};
     double[] yValue = {1, 2, 3, 4, 5};
-    double[] xValue2 = {5};
-    double[] yValue2 = {2};
+
 
     double[] xValue3 = {5, 7};
     double[] yValue3 = {2, 7};
     LinkedListTabulatedFunction linkedListTabulatedFunction=new LinkedListTabulatedFunction(xValue,yValue);
-    LinkedListTabulatedFunction linkedListTabulatedFunction1=new LinkedListTabulatedFunction(xValue2,yValue2);
+
     LinkedListTabulatedFunction linkedListTabulatedFunction2=new LinkedListTabulatedFunction(xValue3,yValue3);
 
     @Test
@@ -63,8 +63,7 @@ class LinkedListTabulatedFunctionTest {
         assertEquals(2,linkedListTabulatedFunction.indexOfX(2.7));
         assertNotEquals(4, linkedListTabulatedFunction.indexOfX(2.9));
 
-        assertEquals(-1, linkedListTabulatedFunction.indexOfX(2.99));
-        assertNotEquals(0, linkedListTabulatedFunction.indexOfX(2.99));
+
     }
 
     @Test
@@ -73,14 +72,12 @@ class LinkedListTabulatedFunctionTest {
         assertEquals(0, linkedListTabulatedFunction.indexOfY(1));
         assertNotEquals(0, linkedListTabulatedFunction.indexOfY(3));
 
-        assertEquals(-1, linkedListTabulatedFunction.indexOfY(7));
-        assertNotEquals(0, linkedListTabulatedFunction.indexOfY(7));
+
     }
 
     @Test
     void floorIndexOfX() {
-        assertEquals(0, linkedListTabulatedFunction.floorIndexOfX(0));
-        assertNotEquals(2, linkedListTabulatedFunction.floorIndexOfX(-1));
+
 
         assertEquals(5, linkedListTabulatedFunction.floorIndexOfX(7));
         assertNotEquals(0, linkedListTabulatedFunction.floorIndexOfX(6));
@@ -99,8 +96,6 @@ class LinkedListTabulatedFunctionTest {
         assertEquals(3,linkedListTabulatedFunction.interpolate(2.7, 2));
         assertNotEquals(0, linkedListTabulatedFunction.interpolate(2.7, 2));
 
-        assertEquals(2, linkedListTabulatedFunction1.interpolate(2.7, 1));
-        assertNotEquals(0, linkedListTabulatedFunction1.interpolate(2.7, 1));
     }
 
     @Test
@@ -108,8 +103,6 @@ class LinkedListTabulatedFunctionTest {
         assertEquals(0, linkedListTabulatedFunction.extrapolateLeft(0));
         assertNotEquals(4, linkedListTabulatedFunction.extrapolateLeft(0));
 
-        assertEquals(2, linkedListTabulatedFunction1.extrapolateLeft(1));
-        assertNotEquals(0, linkedListTabulatedFunction1.extrapolateLeft(1));
     }
 
     @Test
@@ -117,8 +110,7 @@ class LinkedListTabulatedFunctionTest {
         assertEquals(5, linkedListTabulatedFunction.extrapolateRight(5));
         assertNotEquals(0, linkedListTabulatedFunction.extrapolateRight(10));
 
-        assertEquals(2, linkedListTabulatedFunction1.extrapolateLeft(1));
-        assertNotEquals(0, linkedListTabulatedFunction1.extrapolateLeft(1));
+
     }
 
     @Test
@@ -174,8 +166,6 @@ class LinkedListTabulatedFunctionTest {
     @Test
     void toStringList(){
         assertEquals("(1.0; 1.0) (2.0; 2.0) (2.7; 3.0) (2.9; 4.0) (5.0; 5.0) ", linkedListTabulatedFunction.toString());
-        assertEquals("(5.0; 2.0) ",linkedListTabulatedFunction1.toString() );
-        assertNotEquals("(5.0; 5.0) ", linkedListTabulatedFunction1.toString());
         assertEquals("(5.0; 2.0) (7.0; 7.0) ",linkedListTabulatedFunction2.toString() );
     }
 
@@ -189,7 +179,6 @@ class LinkedListTabulatedFunctionTest {
         LinkedListTabulatedFunction linkedListTabulatedFunction22=new LinkedListTabulatedFunction(xValue22,yValue22);
         assertTrue(linkedListTabulatedFunction.equals(linkedListTabulatedFunction11));
         assertTrue(linkedListTabulatedFunction.equals(linkedListTabulatedFunction));
-        assertFalse(linkedListTabulatedFunction.equals(linkedListTabulatedFunction1));
         assertFalse(linkedListTabulatedFunction.equals(linkedListTabulatedFunction22));
         assertFalse(linkedListTabulatedFunction22.equals(null));
     }
@@ -208,6 +197,84 @@ class LinkedListTabulatedFunctionTest {
     void cloneList(){
         Object test = linkedListTabulatedFunction.clone();
         assertTrue(linkedListTabulatedFunction.equals(test));
+    }
+
+    @Test
+    void constructorOne(){
+        double[] xValue2 = {5};
+        double[] yValue2 = {2};
+        assertThrows(IllegalArgumentException.class, () -> {
+            LinkedListTabulatedFunction ltf = new LinkedListTabulatedFunction(xValue2, yValue2);
+        });
+    }
+
+    @Test
+    void constructorTwo(){
+        AtanMathFunction atan = new AtanMathFunction();
+        assertThrows(IllegalArgumentException.class, () -> {
+            LinkedListTabulatedFunction ltf = new LinkedListTabulatedFunction(atan,1,2,1);
+        });
+    }
+    @Test
+    void getNodeEx(){
+        assertThrows(IllegalArgumentException.class, () ->{
+            linkedListTabulatedFunction.getNode(-1);
+        });
+    }
+    @Test
+    void getXex(){
+        assertThrows(IllegalArgumentException.class, () ->{
+            linkedListTabulatedFunction.getX(15);
+        });
+    }
+    @Test
+    void getYex(){
+        assertThrows(IllegalArgumentException.class, () ->{
+            linkedListTabulatedFunction.getY(-15);
+        });
+    }
+    @Test
+    void setYex(){
+        assertThrows(IllegalArgumentException.class, () ->{
+            linkedListTabulatedFunction.setY(11, 11);
+        });
+    }
+    @Test
+    void floorIndexOfXex(){
+        assertThrows(IllegalArgumentException.class, () ->{
+            linkedListTabulatedFunction.floorIndexOfX(0);
+        });
+    }
+    @Test
+    void indexOfXex(){
+        assertThrows(IllegalArgumentException.class, () ->{
+            linkedListTabulatedFunction.indexOfX(0);
+        });
+    }
+    @Test
+    void indexOfYex(){
+        assertThrows(IllegalArgumentException.class, () ->{
+            linkedListTabulatedFunction.indexOfY(9);
+        });
+    }
+
+    @Test
+    void iterator() {
+        Iterator<Point> iterator = linkedListTabulatedFunction.iterator();
+        LinkedListTabulatedFunction.Node node = linkedListTabulatedFunction.getNode(0);
+        int i = 0;
+        while (iterator.hasNext()) {
+            Point point = iterator.next();
+            assertEquals(point.x, linkedListTabulatedFunction.getX(i));
+            assertEquals(point.y, linkedListTabulatedFunction.getY(i));
+            i++;
+        }
+       i = 0;
+        for (Point point : linkedListTabulatedFunction){
+            assertEquals(linkedListTabulatedFunction.getX(i),point.x);
+            assertEquals(linkedListTabulatedFunction.getY(i),point.y);
+            i++;
+        }
     }
 
 
