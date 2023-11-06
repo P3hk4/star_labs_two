@@ -1,6 +1,7 @@
 package functions;
 
 
+import exceptions.InterpolationException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
@@ -93,9 +94,19 @@ class LinkedListTabulatedFunctionTest {
 
     @Test
     void interpolate() {
-        assertEquals(3,linkedListTabulatedFunction.interpolate(2.7, 2));
-        assertNotEquals(0, linkedListTabulatedFunction.interpolate(2.7, 2));
+        try {
+            assertEquals(3,linkedListTabulatedFunction.interpolate(2.7, 2));
+            assertNotEquals(0, linkedListTabulatedFunction.interpolate(2.7, 2));
+        } catch (InterpolationException interpolationException) {
+            fail("InterpolationException not expected");
+        }
 
+        try {
+            assertEquals(3,linkedListTabulatedFunction.interpolate(3, 2));
+            assertNotEquals(0, linkedListTabulatedFunction.interpolate(2.7, 2));
+            fail("InterpolationException expected");
+        } catch (InterpolationException interpolationException) {
+        }
     }
 
     @Test

@@ -17,10 +17,7 @@ UnitFunction unitFunction = new UnitFunction();
 
     double[] xValue = {1, 2, 2.7, 2.9, 5};
     double[] yValue = {1, 2, 3, 4, 5};
-    double[] xValue2 = {5, 2};
-    double[] yValue2 = {2, 2};
     LinkedListTabulatedFunction linkedListTabulatedFunction = new LinkedListTabulatedFunction(xValue,yValue);
-    LinkedListTabulatedFunction linkedListTabulatedFunction1 = new LinkedListTabulatedFunction(xValue2,yValue2);
 
 
     LinkedListTabulatedFunction LTF = new LinkedListTabulatedFunction(sqrFunction,1,100,100);

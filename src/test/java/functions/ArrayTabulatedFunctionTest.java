@@ -2,6 +2,7 @@ package functions;
 
 import exceptions.ArrayIsNotSortedException;
 import exceptions.DifferentLengthOfArraysException;
+import exceptions.InterpolationException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,6 +69,15 @@ class ArrayTabulatedFunctionTest {
         assertEquals(ATF.interpolate(5.5,ATF.floorIndexOfX(5.5)),ATF.interpolate(5.5,ATF.getX(4),ATF.getX(5),ATF.getY(4),ATF.getY(5)));
         assertEquals(ATF.interpolate(8.5,ATF.floorIndexOfX(8.5)),ATF.interpolate(8.5,ATF.getX(7),ATF.getX(8),ATF.getY(7),ATF.getY(8)));
 
+
+        try {
+            double[] X = {1,2,3,4,5,6,7,8,9,10};
+            double[] Y = {1,4,9,16,25,36,49,64,81,100};
+            ArrayTabulatedFunction ATF1 = new ArrayTabulatedFunction(X,Y);
+            System.out.println(ATF1.interpolate(6.5,6));
+            fail("InterpolationException expected");
+        } catch (InterpolationException interpolationException){
+        }
     }
 
     @Test

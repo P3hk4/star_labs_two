@@ -1,5 +1,7 @@
 package functions;
 
+import exceptions.InterpolationException;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -66,8 +68,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     public LinkedListTabulatedFunction(double[] xValues, double[] yValues) {
+        if (xValues == null || yValues == null) throw new IllegalArgumentException("Один или оба массивы имеют значение null");
         if (xValues.length < 2)  throw new IllegalArgumentException("длина меньше минимальной");
         else {
+            checkLengthIsTheSame(xValues,yValues);
+            checkSorted(xValues);
             for (int i = 0; i < xValues.length; i++) {
                 addNode(xValues[i], yValues[i]);
             }
@@ -193,10 +198,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     protected double interpolate(double x, int floorIndex) {
-
         double leftX = getX(floorIndex - 1);
-        double leftY = getY(floorIndex - 1);
         double rightX = getX(floorIndex);
+        if (leftX > x || rightX < x) throw new InterpolationException("X находится вне допустимого интервала значений");
+        double leftY = getY(floorIndex - 1);
         double rightY = getY(floorIndex);
         return interpolate(x, leftX, rightX, leftY, rightY);
     }
