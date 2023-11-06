@@ -16,6 +16,22 @@ class ArrayTabulatedFunctionTest {
         assertEquals(4,ATF.apply(2));
         assertEquals(36,ATF.apply(6));
         assertEquals(81,ATF.apply(9));
+
+        try {
+            double[] X1 = null;
+            double[] Y1 = {1,4,9,16,25,36,49,64,81,100};
+            ArrayTabulatedFunction ATF1 = new ArrayTabulatedFunction(X1,Y1);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException illegalArgumentException){
+        }
+
+        try {
+            double[] X1 = {1};
+            double[] Y1 = {1};
+            ArrayTabulatedFunction ATF1 = new ArrayTabulatedFunction(X1,Y1);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException illegalArgumentException){
+        }
     }
 
     @Test
