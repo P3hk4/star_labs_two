@@ -1,5 +1,7 @@
 package functions;
 
+import exceptions.ArrayIsNotSortedException;
+import exceptions.DifferentLengthOfArraysException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -236,4 +238,93 @@ class ArrayTabulatedFunctionTest {
         });
     }
 
+    @Test
+    void checkLengthIsTheSame() {
+        String nullEx = "Один или оба массива имеют значение null";
+        String lengthEx = "Массивы имеют различную длину";
+
+        try {
+            double[] X = null;
+            double[] Y = {1,4,9};
+            AbstractTabulatedFunction.checkLengthIsTheSame(X,Y);
+            fail("DifferentLengthOfArraysException expected");
+        } catch (DifferentLengthOfArraysException differentLengthOfArraysException) {
+            assertEquals(nullEx,differentLengthOfArraysException.getMessage());
+        }
+
+        try {
+            double[] X = {};
+            double[] Y = {};
+            AbstractTabulatedFunction.checkLengthIsTheSame(X, Y);
+        } catch (DifferentLengthOfArraysException differentLengthOfArraysException) {
+            fail("DifferentLengthOfArraysException not expected");
+        }
+
+        try {
+            double[] X = {1,4,5,6};
+            double[] Y = {3,5,6,8};
+            AbstractTabulatedFunction.checkLengthIsTheSame(X, Y);
+        } catch (DifferentLengthOfArraysException differentLengthOfArraysException) {
+            fail("DifferentLengthOfArraysException not expected");
+        }
+
+        try {
+            double[] X = {1,2,3};
+            double[] Y = {1,2};
+            AbstractTabulatedFunction.checkLengthIsTheSame(X, Y);
+            fail("DifferentLengthOfArraysException expected");
+        } catch (DifferentLengthOfArraysException differentLengthOfArraysException) {
+            assertEquals(lengthEx,differentLengthOfArraysException.getMessage());
+        }
+
+        try {
+            double[] X = {1,2,3};
+            double[] Y = {};
+            AbstractTabulatedFunction.checkLengthIsTheSame(X, Y);
+            fail("DifferentLengthOfArraysException expected");
+        } catch (DifferentLengthOfArraysException differentLengthOfArraysException) {
+            assertEquals(lengthEx,differentLengthOfArraysException.getMessage());
+        }
+
+    }
+
+    @Test
+    void checkSorted() {
+
+        String nullEx = "Массив имеет значение null";
+        String lengthEx = "Массив содержит меньше 2 точек, недостаточно элементов для сортировки";
+        String sortEx = "Массив не является отсортированным";
+
+        try {
+            double[] X = null;
+            AbstractTabulatedFunction.checkSorted(X);
+            fail("ArrayIsNotSortedException expected");
+        } catch (ArrayIsNotSortedException arrayIsNotSortedException) {
+            assertEquals(nullEx, arrayIsNotSortedException.getMessage());
+        }
+
+        try {
+            double[] X = {};
+            AbstractTabulatedFunction.checkSorted(X);
+            fail("ArrayIsNotSortedException expected");
+        } catch (ArrayIsNotSortedException arrayIsNotSortedException) {
+            assertEquals(lengthEx, arrayIsNotSortedException.getMessage());
+        }
+
+        try {
+            double[] X = {1,2,3,4};
+            AbstractTabulatedFunction.checkSorted(X);
+        } catch (ArrayIsNotSortedException arrayIsNotSortedException) {
+            fail("ArrayIsNotSortedException not expected");
+        }
+
+        try {
+            double[] X = {1,3,5,4};
+            AbstractTabulatedFunction.checkSorted(X);
+            fail("ArrayIsNotSortedException expected");
+        } catch (ArrayIsNotSortedException arrayIsNotSortedException) {
+            assertEquals(sortEx,arrayIsNotSortedException.getMessage());
+        }
+
+    }
 }
