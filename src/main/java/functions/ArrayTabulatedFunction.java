@@ -14,8 +14,11 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     protected int count;
 
     public ArrayTabulatedFunction(double[] xValues, double[] yValues){
-        if (xValues.length < 2) throw new IllegalArgumentException("длина меньше минимальной");
+        if (xValues == null || yValues == null) throw new IllegalArgumentException("Один или оба массивы имеют значение null");
+        if (xValues.length < 2) throw new IllegalArgumentException("Длина меньше минимальной");
         else {
+            checkLengthIsTheSame(xValues,yValues);
+            checkSorted(xValues);
             this.count = xValues.length;
             this.xValues = Arrays.copyOf(xValues, xValues.length);
             this.yValues = Arrays.copyOf(yValues, yValues.length);
