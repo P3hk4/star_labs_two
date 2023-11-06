@@ -1,4 +1,11 @@
 package exceptions;
 
-public class ArrayIsNotSortedException {
+public class ArrayIsNotSortedException extends RuntimeException{
+
+    public ArrayIsNotSortedException() {
+    }
+
+    public ArrayIsNotSortedException(String message) {
+        super(message);
+    }
 }
