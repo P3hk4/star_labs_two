@@ -284,7 +284,6 @@ class LinkedListTabulatedFunctionTest {
         for (Point point : linkedListTabulatedFunction){
             assertEquals(linkedListTabulatedFunction.getX(i),point.x);
             assertEquals(linkedListTabulatedFunction.getY(i),point.y);
-            System.out.println(point.x + " " + point.y);
             i++;
         }
     }
