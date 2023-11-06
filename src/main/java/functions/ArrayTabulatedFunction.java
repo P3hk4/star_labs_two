@@ -224,7 +224,6 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     @Override
     public Iterator<Point> iterator() {
-        //throw new UnsupportedOperationException();
         return new Iterator<Point>() {
             private int i = 0;
 
