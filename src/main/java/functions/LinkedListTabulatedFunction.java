@@ -226,7 +226,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         else return interpolate(x,floorIndexOfX(x));
     }
 
-    @Override
+     /*@Override
     public String toString(){
         Node elem = head;
         String result = elem.toString();
@@ -238,7 +238,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             result += " ";
         }
         return result;
-    }
+    }*/
 
     @Override
     public boolean equals(Object o){

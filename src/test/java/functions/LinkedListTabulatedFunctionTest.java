@@ -288,5 +288,8 @@ class LinkedListTabulatedFunctionTest {
         }
     }
 
-
+    @Test
+    void newToString(){
+        assertEquals(linkedListTabulatedFunction.toString(), "LinkedListTabulatedFunction size = 5\n[1.0; 1.0]\n[2.0; 2.0]\n[2.7; 3.0]\n[2.9; 4.0]\n[5.0; 5.0]");
+    }
 }
