@@ -12,8 +12,8 @@ public class TabulatedFunctionFileOutputStream {
     public static void main(String[] args) {
         try (BufferedOutputStream arrayFile = new BufferedOutputStream(new FileOutputStream("output/array function.bin"));
              BufferedOutputStream listFile = new BufferedOutputStream(new FileOutputStream("output/linked list function.bin"))) {
-            double[] xValue = {1, 3, 5, 7};
-            double[] yValue = {2, 4, 6, 8};
+            double[] xValue = {1,2,3,4,5,6,7,8,9,10};
+            double[] yValue = {1,4,9,16,25,36,49,64,81,100};
             TabulatedFunction arrayFunction = new ArrayTabulatedFunction(xValue, yValue);
             TabulatedFunction listFunction = new LinkedListTabulatedFunction(xValue, yValue);
 
