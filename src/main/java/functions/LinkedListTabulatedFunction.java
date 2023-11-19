@@ -47,7 +47,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     }
 
-    private static final long serialVersionUID = 6181681754591051600L;
+    private static final long serialVersionUID = 8325804966018832646L;
     private int count;
     private Node head;
 
