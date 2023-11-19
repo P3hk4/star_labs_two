@@ -1,10 +1,8 @@
 package io;
 
-import functions.ArrayTabulatedFunction;
 import functions.Point;
 import functions.TabulatedFunction;
 import functions.factory.TabulatedFunctionFactory;
-
 import java.io.*;
 import java.text.NumberFormat;
 import java.text.ParseException;
