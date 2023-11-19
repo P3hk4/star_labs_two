@@ -2,13 +2,14 @@ package functions;
 
 import exceptions.InterpolationException;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Cloneable{
+public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Cloneable, Serializable {
 
-    static class Node implements Cloneable{
+    static class Node implements Cloneable, Serializable{
         Node next;
         Node prev;
         double x;
@@ -47,7 +48,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     }
 
-    private static final long serialVersionUID = 8325804966018832646L;
+    private static final long serialVersionUID = 2906642554793891381L;
+
     private int count;
     private Node head;
 
