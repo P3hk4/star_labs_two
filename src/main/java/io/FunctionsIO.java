@@ -5,6 +5,9 @@ import functions.TabulatedFunction;
 import functions.factory.TabulatedFunctionFactory;
 
 import java.io.*;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
 
 public final class FunctionsIO {
     private FunctionsIO() {
@@ -24,7 +27,7 @@ public final class FunctionsIO {
         }
     }
 
-    public static void writeTabulatedFunction(BufferedOutputStream outputStream, TabulatedFunction function) throws IOException {
+    public static void writeTabulatedFunction(BufferedOutputStream outputStream, TabulatedFunction function){
        try{
             DataOutputStream dos = new DataOutputStream(outputStream);
             dos.writeInt(function.getCount());
@@ -37,6 +40,24 @@ public final class FunctionsIO {
        catch (IOException e) {
            e.printStackTrace();
        }
+    }
+
+    static TabulatedFunction readTabulatedFunction(BufferedReader reader, TabulatedFunctionFactory factory) throws IOException {
+        int count = Integer.parseInt(reader.readLine());
+        double[] xValue = new double[count];
+        double[] yValue = new double[count];
+        NumberFormat formatter;
+        formatter = NumberFormat.getInstance(Locale.forLanguageTag("ru"));
+        for (int i = 0; i < count; i++) {
+            String[] str = reader.readLine().split(" ");
+            try {
+                xValue[i] = formatter.parse(str[0]).doubleValue();
+                yValue[i] = formatter.parse(str[1]).doubleValue();
+            } catch (ParseException e) {
+                throw new IOException(e);
+            }
+        }
+        return factory.create(xValue, yValue);
     }
 
     public static TabulatedFunction readTabulatedFunction(BufferedInputStream inputStream, TabulatedFunctionFactory factory) throws IOException {
