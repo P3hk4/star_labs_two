@@ -2,17 +2,17 @@ package functions;
 
 import exceptions.InterpolationException;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Cloneable{
+public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Cloneable, Serializable {
 
+    private static final long serialVersionUID = 2129554966826347219L;
     protected double [] xValues;
-
     protected double [] yValues;
-
     protected int count;
 
     public ArrayTabulatedFunction(double[] xValues, double[] yValues){
@@ -49,6 +49,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             }
         }
     }
+
 
     @Override
     protected int floorIndexOfX(double x) {
