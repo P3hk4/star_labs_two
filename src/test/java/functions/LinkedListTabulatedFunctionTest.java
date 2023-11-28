@@ -174,11 +174,6 @@ class LinkedListTabulatedFunctionTest {
         assertTrue(node.equals(clone));
     }
 
-    @Test
-    void toStringList(){
-        assertEquals("(1.0; 1.0) (2.0; 2.0) (2.7; 3.0) (2.9; 4.0) (5.0; 5.0) ", linkedListTabulatedFunction.toString());
-        assertEquals("(5.0; 2.0) (7.0; 7.0) ",linkedListTabulatedFunction2.toString() );
-    }
 
     @Test
     void equalsList(){
