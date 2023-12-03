@@ -84,4 +84,21 @@ class SynchronizedTabulatedFunctionTest {
             ++i;
         }
     }
+
+    @Test
+    void doSynchronously() {
+        SynchronizedTabulatedFunction.Operation<Double> operationDouble = func -> {
+            double maxNumber = STF.getY(0);
+            for (Point point : STF)
+                if (maxNumber < point.y) maxNumber = point.y;
+            return maxNumber;
+        };
+        SynchronizedTabulatedFunction.Operation<Void> operationVoid = func -> {
+            for (Point point : STF)
+                System.out.println(point.x + " " + point.y);
+            return null;
+        };
+        assertNull(STF.doSynchronously(operationVoid));
+        assertEquals(5, STF.doSynchronously(operationDouble));
+    }
 }
