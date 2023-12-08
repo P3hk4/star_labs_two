@@ -216,35 +216,32 @@
         <span onclick="closeModal('mathFunctionModal'); resetMathFunctionModal();" style="float: right; cursor: pointer;">&times;</span>
         <h2>Создание MathFunction</h2>
 
-
+        <form method="post" action="/createMathFunction">
         <label for="functionSelect">Выберите функцию:</label>
-        <select id="functionSelect" style="margin-bottom: 10px;">
+        <select id="functionSelect" name="functionSelect" style="margin-bottom: 10px;">
             <option value="ConstantFunction">ConstantFunction</option>
             <option value="IdentityFunction">IdentityFunction</option>
             <option value="UnitFunction">UnitFunction</option>
             <option value="ZeroFunction">ZeroFunction</option>
             <option value="SqrFunction">SqrFunction</option>
         </select>
-
         <br>
-
-
         <label for="pointCountInput">Количество точек:</label>
-        <input type="number" id="pointCountInput" min="1" step="1" >
+        <input type="number" id="pointCountInput" name="pointCountInput" min="1" step="1" >
 
         <br>
 
         <label for="xFromInput">xFrom:</label>
-        <input type="number" id="xFromInput" step="any" >
+        <input type="number" id="xFromInput" name="xFromInput" step="any" >
 
         <br>
 
         <label for="xToInput">xTo:</label>
-        <input type="number" id="xToInput" step="any" >
+        <input type="number" id="xToInput"  name="xToInput" step="any" >
         <br>
-        <button onclick="closeModal('mathFunctionModal')">ОК</button>
+        <input type="submit" onclick="closeModal('mathFunctionModal')" value="ОК">
 
-
+        </form>
 
     </div>
 </div>
@@ -255,10 +252,13 @@
         <span onclick="closeModal('settingsModal')" style="float: right; cursor: pointer;">&times;</span>
         <h2>Настройки</h2>
         <p>Выберите тип табулированной функции:</p>
+        <form action="/getSettings" method="post">
         <label><input type="radio" name="tabulatedFunctionType" value="ArrayTabulatedFunction"> ArrayTabulatedFunction</label>
         <label><input type="radio" name="tabulatedFunctionType" value="LinkedListTabulatedFunction"> LinkedListTabulatedFunction</label>
-        <br>
-        <button onclick="closeModal('settingsModal')">ОК</button>
+            <br>
+
+        <input type="submit" onclick="closeModal('settingsModal')" value="ОК">
+        </form>
     </div>
 </div>
 
@@ -276,6 +276,7 @@
 
     // Функция для закрытия модального окна
     function closeModal(modalId) {
+
         const modal = document.getElementById(modalId);
 
         if (modalId === 'creationModal') {
