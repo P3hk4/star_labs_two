@@ -17,18 +17,18 @@ public class WebController {
         return "homePage";
     }
 
-    @PostMapping("/getSettings")
-    public String getSettings(@RequestParam("tabulatedFunctionType") String type){
+    @PostMapping("/setSettings")
+    public void getSettings(@RequestParam("functionSelect") String type){
         System.out.println(type);
-        return "redirect:homePage";
     }
 
     @PostMapping("/createMathFunction")
-    public String createMathFunction(HttpServletRequest request){
-        System.out.println(request.getParameter("functionSelect"));
-        System.out.println(request.getParameter("pointCountInput"));
-        System.out.println(request.getParameter("xFromInput"));
-        System.out.println(request.getParameter("xToInput"));
-        return "homePage";
+    public void createMathFunction(@RequestParam("functionSelect") String function, @RequestParam("pointCount") int count,
+                                   @RequestParam("xFrom") double xFrom, @RequestParam("xTo") double xTo){
+        System.out.println(function);
+        System.out.println(count);
+        System.out.println(xFrom);
+        System.out.println(xTo);
+
     }
 }
