@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Моя Страница</title>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/styles.css" />">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <body>
 
 <div class="card-container">
@@ -215,8 +216,7 @@
     <div class="modal-content">
         <span onclick="closeModal('mathFunctionModal'); resetMathFunctionModal();" style="float: right; cursor: pointer;">&times;</span>
         <h2>Создание MathFunction</h2>
-
-        <form method="post" action="/createMathFunction">
+        <form>
         <label for="functionSelect">Выберите функцию:</label>
         <select id="functionSelect" name="functionSelect" style="margin-bottom: 10px;">
             <option value="ConstantFunction">ConstantFunction</option>
@@ -228,19 +228,14 @@
         <br>
         <label for="pointCountInput">Количество точек:</label>
         <input type="number" id="pointCountInput" name="pointCountInput" min="1" step="1" >
-
         <br>
-
         <label for="xFromInput">xFrom:</label>
         <input type="number" id="xFromInput" name="xFromInput" step="any" >
-
         <br>
-
         <label for="xToInput">xTo:</label>
         <input type="number" id="xToInput"  name="xToInput" step="any" >
         <br>
-        <input type="submit" onclick="closeModal('mathFunctionModal')" value="ОК">
-
+        <input type="submit" onclick="sendCreatedMathFunction()" value="ОК">
         </form>
 
     </div>
@@ -252,18 +247,43 @@
         <span onclick="closeModal('settingsModal')" style="float: right; cursor: pointer;">&times;</span>
         <h2>Настройки</h2>
         <p>Выберите тип табулированной функции:</p>
-        <form action="/getSettings" method="post">
-        <label><input type="radio" name="tabulatedFunctionType" value="ArrayTabulatedFunction"> ArrayTabulatedFunction</label>
-        <label><input type="radio" name="tabulatedFunctionType" value="LinkedListTabulatedFunction"> LinkedListTabulatedFunction</label>
+        <form>
+        <label><input type="radio" name="tabulatedFunctionType"  value="ArrayTabulatedFunction" checked> ArrayTabulatedFunction</label>
+        <label><input type="radio" name="tabulatedFunctionType"  value="LinkedListTabulatedFunction"> LinkedListTabulatedFunction</label>
             <br>
-
-        <input type="submit" onclick="closeModal('settingsModal')" value="ОК">
+        <input type="submit" onclick="sendSettings()" value="ОК">
         </form>
     </div>
 </div>
 
 <script>
     let isOpenedFromOperations = false;
+
+    function sendSettings() {
+        let selectors = document.querySelectorAll('input[type="radio"][name="tabulatedFunctionType"]');
+        let type;
+        if (selectors.item(0).checked)
+            type = selectors.item(0).value;
+        else type = selectors.item(1).value;
+        $.ajax({
+            url: "/setSettings",
+            type: "POST",
+            data: ({functionSelect: type}),
+            dataType: "text",
+            success: closeModal('settingsModal')
+        });
+    }
+
+    function sendCreatedMathFunction() {
+        $.ajax({
+            url: "/createMathFunction",
+            type: "POST",
+            data: ({functionSelect: document.getElementById("functionSelect").value, pointCount: document.getElementById("pointCountInput").value,
+                xFrom: document.getElementById("xFromInput").value, xTo: document.getElementById("xToInput").value} ),
+            dataType: "text",
+            success: closeModal('mathFunctionModal')
+        });
+    }
 
     function openCreationModalFromOperations() {
         isOpenedFromOperations = true;
