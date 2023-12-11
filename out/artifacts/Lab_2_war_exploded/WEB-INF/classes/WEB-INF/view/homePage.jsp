@@ -149,7 +149,7 @@
 
         <div class="button-container1">
             <button class="modal-button1" onclick="openCreationModalFromOperations()">Создать TabulatedFunction</button>
-            <button class="modal-button1" onclick="openModal('mathFunctionModal')">Создать MathFunction</button>
+            <button class="modal-button1" onclick="openMathFunctionModalFromOper()">Создать MathFunction</button>
             <button class="modal-button1" onclick="openFileInput()">Загрузить</button>
             <input type="file" id="fileInput2" style="display: none;" onchange="handleFileUpload(this)">
             <button class="modal-button1" onclick="saveToFile('downloadLink4')">Сохранить</button>
@@ -255,6 +255,7 @@
 
 <script>
     let firstOperand = null;
+    let secondOperand = null;
     let sizeOne = 0;
     let sizeTwo = 0;
     let MathFromOper = false;
@@ -317,8 +318,70 @@
                         closeModal('mathFunctionModal',arrayInputX,arrayInputY,arrayOutputX,arrayOutputY);
                 }
             });
-        } else if (isOpenedFromOperations){
+        } else if (MathFromOper){
 
+            if (firstOperand === null){
+                $.ajax({
+                    url: "/getMathFunction",
+                    type: "POST",
+                    data: ({functionSelect: document.getElementById("functionSelect").value, pointCount: document.getElementById("pointCountInput").value,
+                        xFrom: document.getElementById("xFromInput").value, xTo: document.getElementById("xToInput").value} ),
+                    dataType: "text",
+                    success: function(response) {
+                        let arr = response.split('|');
+                        let arrayInputXString = arr[0].split('_');
+                        let arrayInputYString = arr[1].split('_');
+                        let arrayInputX = [];
+                        let arrayInputY = [];
+                        for (let i = 0; i < arrayInputXString.length; i++){
+                            arrayInputX[i] = parseFloat(arrayInputXString[i]);
+                            arrayInputY[i] = parseFloat(arrayInputYString[i]);
+                        }
+                        firstOperand = arr[0]+"|"+arr[1];
+                        closeModal('mathFunctionModal',arrayInputX,arrayInputY,null,null,null,null);
+                    }
+                });
+            } else {
+                let operationType = document.getElementById("operationSelect").value;
+                $.ajax({
+                    url: "/calculateMathOperationResult",
+                    type: "POST",
+                    data: ({operationType:operationType, firstOperand:firstOperand,functionSelect: document.getElementById("functionSelect").value, pointCount: document.getElementById("pointCountInput").value,
+                        xFrom: document.getElementById("xFromInput").value, xTo: document.getElementById("xToInput").value} ),
+                    dataType: "text",
+                    success: function(response) {
+                        let arr = response.split(':');
+                        let secFuncArray = arr[0].split('|');
+                        let resFuncArray = arr[1].split('|');
+                        let arraySecXString = secFuncArray[0].split('_');
+                        let arraySecYString = secFuncArray[1].split('_');
+                        let arraySecX = [];
+                        let arraySecY = [];
+                        for (let i = 0; i < arraySecXString.length; i++){
+                            arraySecX[i] = parseFloat(arraySecXString[i]);
+                            arraySecY[i] = parseFloat(arraySecYString[i]);
+                        }
+                        let arrayResXString = resFuncArray[0].split('_');
+                        let arrayResYString = resFuncArray[1].split('_');
+                        let arrayResX = [];
+                        let arrayResY = [];
+                        for (let i = 0; i < arrayResXString.length; i++){
+                            arrayResX[i] = parseFloat(arrayResXString[i]);
+                            arrayResY[i] = parseFloat(arrayResYString[i]);
+                        }
+                        let firstArr = firstOperand.split('|');
+                        let arrayFirstXString = firstArr[0].split('_');
+                        let arrayFirstYString = firstArr[1].split('_');
+                        let arrayFirstX = [];
+                        let arrayFirstY = [];
+                        for (let i = 0; i < arrayFirstXString.length; i++){
+                            arrayFirstX[i] = parseFloat(arrayFirstXString[i]);
+                            arrayFirstY[i] = parseFloat(arrayFirstYString[i]);
+                        }
+                        closeModal('mathFunctionModal',arrayFirstX,arrayFirstY,arrayResX,arrayResY,arraySecX,arraySecY);
+                    }
+                });
+            }
         } else {
         $.ajax({
             url: "/serializeMathFunction",
@@ -390,7 +453,7 @@
                         const stringX = X.join('_');
                         const stringY = Y.join('_');
                         firstOperand = stringX+'|'+stringY;
-                        closeModal('creationModal',null,null,null);
+                        closeModal('creationModal',null,null,null,null);
                     } else {
                         var X = [];
                         var Y = [];
@@ -423,6 +486,7 @@
                                     arrayY[i] = parseFloat(arrayYString[i]);
                                 }
                                 closeModal('creationModal',null,null,arrayX,arrayY);
+                                firstOperand = null;
                             }
                         });
 
@@ -525,25 +589,18 @@
         closeModal('creationModal',null,null,null,null);
     }
 
-    function openCreationModalFromOperations() {
-        isOpenedFromOperations = true;
-        openModal('creationModal');
-    }
-
-    function openModal(modalId) {
-        document.getElementById(modalId).style.display = 'flex';
-    }
-
-    function closeModal(modalId,inputX,inputY,outputsX,outputsY) {
+    function closeModal(modalId,inputX,inputY,outputsX,outputsY, inputX1,inputY1) {
         const modal = document.getElementById(modalId);
 
+
         if (modalId === 'creationModal') {
-        // Если окно "Создание" закрывается и оно открыто из "Операции", тогда передаем данные в "Операции"
+// Если окно "Создание" закрывается и оно открыто из "Операции", тогда передаем данные в "Операции"
             if (isOpenedFromOperations) {
                 fillOperationsTable();
                 if (sizeOne === sizeTwo){
                     sizeOne = 0;
                     sizeTwo = 0;
+                    currentTable = 1;
                     generateTableForOperation(outputsX,outputsY);
                 }
                 isOpenedFromOperations = false; // сбрасываем флаг
@@ -551,6 +608,9 @@
             if (isOpenedFromDif) {
                 fillOperationsTableDif(outputsX,outputsY);
                 isOpenedFromOperations = false; // сбрасываем флаг
+            }
+            else {
+// открыто напрямую тут нужно сохранять
             }
         }
         if (modalId === 'mathFunctionModal'){
@@ -562,13 +622,18 @@
             }
             else{
                 if(MathFromOper){
-                    generateTableForOperation(inputX,inputY);
+                    if ( currentTable % 2 !== 0) {
+                        generateTableForMathOperation(inputX,inputY);
+                        currentTable++;
+                    }
+                    else generateTableForMathOperation(inputX1,inputY1);
+
                     if (sizeOne === sizeTwo) generateTableForOperation(outputsX,outputsY);
                     document.getElementById('mathFunctionModal').style.display = 'none';
                     MathFromOper = false;
                 }
                 else{
-                    //saveToFile('downloadLink8')
+                    // открыто напрямую, тут нужно сохранять
                 }
             }
 
@@ -644,6 +709,54 @@
         }
     }
 
+    function generateTableForMathOperation(inputX,inputY) {
+        const numberInput = document.getElementById('pointCountInput').value;
+        if (currentTable % 2 !== 0){
+            const tableBody = document.querySelector('#firstFunctionTable tbody');
+            sizeOne = numberInput;
+            tableBody.innerHTML = '';
+
+            ////
+            for (var i = 0; i < numberInput; i++) {
+                var newRow = tableBody.insertRow();
+                var cellX = newRow.insertCell(0);
+                var cellY = newRow.insertCell(1);
+
+                cellX.innerHTML = '<input type="text" name="resX" value="' + inputX[i] + '" readonly>';
+                cellY.innerHTML = '<input type="text" name="resY" value="' + inputY[i] + '" readonly>';
+            }
+
+            ////
+        }
+        else {
+            const tableBody = document.querySelector('#secondFunctionTable tbody');
+            sizeOne = numberInput;
+            tableBody.innerHTML = '';
+
+            ////
+
+            for (var i = 0; i < numberInput; i++) {
+                var newRow = tableBody.insertRow();
+                var cellX = newRow.insertCell(0);
+                var cellY = newRow.insertCell(1);
+
+                cellX.innerHTML = '<input type="text" name="resX" value="' + inputX[i] + '" readonly>';
+                cellY.innerHTML = '<input type="text" name="resY" value="' + inputY[i] + '" readonly>';
+            }
+
+            ////
+
+        }
+        // for (var i = 0; i < numberInput; i++) {
+        //     var newRow = tableBody.insertRow();
+        //     var cellX = newRow.insertCell(0);
+        //     var cellY = newRow.insertCell(1);
+        //
+        //     cellX.innerHTML = '<input type="text" name="resX" value="' + inputX[i] + '" readonly>';
+        //     cellY.innerHTML = '<input type="text" name="resY" value="' + inputY[i] + '" readonly>';
+        // }
+    }
+
     function resetCreationModal() {
         // Сбрасываем значения полей ввода
         document.getElementById('numberInput').value = '';
@@ -695,17 +808,46 @@
         currentTable++;
     }
 
-    function openMathFunctionModal() {
-        openModal('mathFunctionModal');
+    function openCreationModalFromOperations() {
+        isOpenedFromOperations = true;
+        openModal('creationModal');
     }
 
     function openFileInput() {
         document.getElementById('fileInput').click();
     }
 
+    function openMathFunctionModal() {
+        openModal('mathFunctionModal');
+    }
+
     function openMathFunctionModalFromDif() {
         MathFromDif = true
         openModal('mathFunctionModal');
+    }
+
+    function openMathFunctionModalFromOper() {
+        MathFromOper = true
+        openModal('mathFunctionModal');
+    }
+
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function openOperationsModal() {
+        // Очистка данных перед открытием модального окна
+        clearTableData('firstFunctionTable');
+        clearTableData('secondFunctionTable');
+        clearTableData('resultFunctionTable');
+
+        // Открываем модальное окно
+        openModal('operationsModal');
+    }
+
+    function openCreationModalFromDif() {
+        isOpenedFromDif = true
+        openModal('creationModal');
     }
 
     function handleFileUpload(input) {
@@ -753,21 +895,6 @@
         const tableBody = document.getElementById(tableId).querySelector('tbody');
         tableBody.innerHTML = '';
 
-    }
-
-    function openOperationsModal() {
-        // Очистка данных перед открытием модального окна
-        clearTableData('firstFunctionTable');
-        clearTableData('secondFunctionTable');
-        clearTableData('resultFunctionTable');
-
-        // Открываем модальное окно
-        openModal('operationsModal');
-    }
-
-    function openCreationModalFromDif() {
-        isOpenedFromDif = true
-        openModal('creationModal');
     }
 
     function fillOperationsTableDif(outputsX,outputsY) {
