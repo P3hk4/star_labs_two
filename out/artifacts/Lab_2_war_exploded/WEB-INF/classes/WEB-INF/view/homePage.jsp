@@ -68,7 +68,7 @@
 
         <div class="button-container1">
             <button class="modal-button1" onclick="openCreationModalFromDif()">Открыть Создание</button>
-            <button class="modal-button1" onclick="openModal('mathFunctionModal')">Открыть MathFunction</button>
+            <button class="modal-button1" onclick="openMathFunctionModalFromDif()">Открыть MathFunction</button>
             <button class="modal-button1" onclick="openFileInput()">Загрузить</button>
             <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload(this)">
             <button class="modal-button1" onclick="saveToFile('downloadLink1')">Сохранить</button>
@@ -104,7 +104,6 @@
         <span onclick="closeModal('operationsModal')" style="float: right; cursor: pointer;">&times;</span>
         <h2>Операции</h2>
 
-
         <label for="operationSelect">Выберите операцию:</label>
         <select id="operationSelect" style="margin-bottom: 10px;">
             <option value="addition">Сложение</option>
@@ -113,9 +112,7 @@
             <option value="division">Деление</option>
         </select>
 
-
         <h3>Первая функция</h3>
-
 
         <table id="firstFunctionTable" style="width: 100%;">
             <thead>
@@ -129,7 +126,7 @@
 
         <div class="button-container1">
             <button class="modal-button1" onclick="openCreationModalFromOperations()">Создать TabulatedFunction</button>
-            <button class="modal-button1" onclick="openModal('mathFunctionModal')">Создать MathFunction</button>
+            <button class="modal-button1" onclick="openMathFunctionModalFromOper()">Создать MathFunction</button>
             <button class="modal-button1" onclick="openFileInput()">Загрузить</button>
             <input type="file" id="fileInput1" style="display: none;" onchange="handleFileUpload(this)">
             <button class="modal-button1" onclick="saveToFile('downloadLink3')">Сохранить</button>
@@ -175,7 +172,7 @@
 
 
 
-        <button class="modal-button" onclick="saveToFile('downloadLink5')">Сохранить</button>
+        <button class="modal-button" onclick="serializeOperationResult()">Сохранить</button>
 
 
         <a id="downloadLink5" style="display: none"></a>
@@ -188,7 +185,6 @@
     <div class="modal-content">
         <span onclick="closeModal('creationModal'); resetCreationModal();" style="float: right; cursor: pointer;">&times;</span>
         <h2>Создание TabulatedFunction</h2>
-
         <input placeholder="Количество точек" class="input" name="text" type="number" id="numberInput">
         <button class="modal-button" onclick="generateTable()">Ок</button><br>
 
@@ -202,7 +198,7 @@
             <tbody></tbody>
         </table>
         <button class="modal-button" onclick="sendCreatedFunction()">Создать</button>
-
+        <a id="createDownloadLink" style="display: none"></a>
     </div>
 </div>
 
@@ -258,7 +254,11 @@
 </div>
 
 <script>
-
+    let firstOperand = null;
+    let sizeOne = 0;
+    let sizeTwo = 0;
+    let MathFromOper = false;
+    let MathFromDif = false;
     let isOpenedFromOperations = false;
     let isOpenedFromDif = false;
     let currentTable = 1;
@@ -287,7 +287,7 @@
     }
 
     function sendCreatedMathFunction() {
-        if (isOpenedFromDif) {
+        if (MathFromDif) {
             $.ajax({
                 url: "/differentiateMathFunction",
                 type: "POST",
@@ -295,12 +295,27 @@
                     xFrom: document.getElementById("xFromInput").value, xTo: document.getElementById("xToInput").value} ),
                 dataType: "text",
                 success: function(response) {
-                        var array = JSON.parse(response); // Преобразование строки в массив
-                        var result = array.map(function(subArray) {
-                            return subArray.map(Number); // Преобразование каждого элемента в числовой тип
-                        });
-                        closeModal('mathFunctionModal');
+                        let arr = response.split(':');
+                        let inputFuncArray = arr[0].split('|');
+                        let diffFuncArray = arr[1].split('|');
+                        let arrayInputXString = inputFuncArray[0].split('_');
+                        let arrayInputYString = inputFuncArray[1].split('_');
+                        let arrayInputX = [];
+                        let arrayInputY = [];
+                        for (let i = 0; i < arrayInputXString.length; i++){
+                            arrayInputX[i] = parseFloat(arrayInputXString[i]);
+                            arrayInputY[i] = parseFloat(arrayInputYString[i]);
                         }
+                        let arrayOutputXString = diffFuncArray[0].split('_');
+                        let arrayOutputYString = diffFuncArray[1].split('_');
+                        let arrayOutputX = [];
+                        let arrayOutputY = [];
+                        for (let i = 0; i < arrayOutputXString.length; i++){
+                            arrayOutputX[i] = parseFloat(arrayOutputXString[i]);
+                            arrayOutputY[i] = parseFloat(arrayOutputYString[i]);
+                        }
+                        closeModal('mathFunctionModal',arrayInputX,arrayInputY,arrayOutputX,arrayOutputY);
+                }
             });
         } else if (isOpenedFromOperations){
 
@@ -313,24 +328,18 @@
             dataType: "text",
             success: function (response) {
                 console.log(response);
-                // Создаем новый Blob (двоичные данные) из данных
                 const blob = new Blob([response], {type: 'text/plain'});
-                // Создаем ссылку и прикрепляем Blob к ней
                 const downloadLink = document.getElementById("mathDownloadLink");
                 downloadLink.href = URL.createObjectURL(blob);
-                // Запрашиваем у пользователя название файла
                 const fileName = prompt('Введите название файла:', 'название_файла.txt');
-                // Если пользователь ввел название файла, продолжаем
                 if (fileName) {
-                    // Устанавливаем атрибут download с указанием названия файла
                     downloadLink.download = fileName;
-                    // Генерируем событие клика на ссылке
                     downloadLink.click();
-                    const buttonContainer = event.currentTarget.parentElement;
-                    closeModal('mathFunctionModal',null,null,null,null);
+                    //const buttonContainer = event.currentTarget.parentElement;
                 }
             }
         });
+            closeModal('mathFunctionModal',null,null,null,null);
         }
     }
 
@@ -368,10 +377,86 @@
                 });
             }
             else if (isOpenedFromOperations){
+                    if (firstOperand === null){
+                        var X = []; var Y = [];
+                        var inputsX = document.querySelectorAll('input[type="number"][name="inputX"]');
+                        var inputsY = document.querySelectorAll('input[type="number"][name="inputY"]');
+                        for (let i = 0; i <inputsX.length; ++i){
+                            var valueX = parseFloat(inputsX[i].value);
+                            var valueY = parseFloat(inputsY[i].value);
+                            X.push(valueX);
+                            Y.push(valueY);
+                        }
+                        const stringX = X.join('_');
+                        const stringY = Y.join('_');
+                        firstOperand = stringX+'|'+stringY;
+                        closeModal('creationModal',null,null,null);
+                    } else {
+                        var X = [];
+                        var Y = [];
+                        var inputsX = document.querySelectorAll('input[type="number"][name="inputX"]');
+                        var inputsY = document.querySelectorAll('input[type="number"][name="inputY"]');
+                        for (let i = 0; i < inputsX.length; ++i) {
+                            var valueX = parseFloat(inputsX[i].value);
+                            var valueY = parseFloat(inputsY[i].value);
+                            X.push(valueX);
+                            Y.push(valueY);
+                        }
+                        const stringX = X.join('_');
+                        const stringY = Y.join('_');
+                        let secondOperand = stringX + '|' + stringY;
+                        let operationType = document.getElementById("operationSelect").value;
+                        $.ajax({
+                            url: "/calculateOperationResult",
+                            type: "POST",
+                            data: ({
+                                operationType: operationType,firstOperand:firstOperand,secondOperand:secondOperand}),
+                            dataType: "text",
+                            success: function (response) {
+                                let arr = response.split('|');
+                                let arrayXString = arr[0].split('_');
+                                let arrayYString = arr[1].split('_');
+                                let arrayX = [];
+                                let arrayY = [];
+                                for (let i = 0; i < arrayXString.length; i++){
+                                    arrayX[i] = parseFloat(arrayXString[i]);
+                                    arrayY[i] = parseFloat(arrayYString[i]);
+                                }
+                                closeModal('creationModal',null,null,arrayX,arrayY);
+                            }
+                        });
 
+                    }
             } else {
-
-
+                var X = []; var Y = [];
+                var inputsX = document.querySelectorAll('input[type="number"][name="inputX"]');
+                var inputsY = document.querySelectorAll('input[type="number"][name="inputY"]');
+                for (let i = 0; i <inputsX.length; ++i){
+                    var valueX = parseFloat(inputsX[i].value);
+                    var valueY = parseFloat(inputsY[i].value);
+                    X.push(valueX);
+                    Y.push(valueY);
+                }
+                const stringX = X.join('_');
+                const stringY = Y.join('_');
+                $.ajax({
+                    url: "/serializeTabulatedFunction",
+                    type: "POST",
+                    data: ({X: stringX,Y: stringY}),
+                    dataType: "text",
+                    success: function(response) {
+                        const blob = new Blob([response], {type: 'text/plain'});
+                        const downloadLink = document.getElementById("createDownloadLink");
+                        downloadLink.href = URL.createObjectURL(blob);
+                        const fileName = prompt('Введите название файла:', 'название_файла.txt');
+                        if (fileName) {
+                            downloadLink.download = fileName;
+                            downloadLink.click();
+                            //const buttonContainer = event.currentTarget.parentElement;
+                        }
+                    }
+                });
+                closeModal('creationModal',null,null,null,null);
             }
     }
 
@@ -396,58 +481,118 @@
                 const blob = new Blob([response], { type: 'text/plain' });
                 const downloadLink = document.getElementById("downloadLink2");
                 downloadLink.href = URL.createObjectURL(blob);
-                const fileName = prompt('Введите название файла:', 'название_файла.txt');
+                const fileName = prompt('Введите название файла:', 'DifferentialResult.txt');
                 if (fileName) {
                     downloadLink.download = fileName;
                     downloadLink.click();
-                    const buttonContainer = event.currentTarget.parentElement;
+                    //const buttonContainer = event.currentTarget.parentElement;
                 }
-                closeModal('creationModal',null,null,null,null);
             }
         });
+        closeModal('creationModal',null,null,null,null);
+    }
+
+    function serializeOperationResult(){
+        var X = []; var Y = [];
+
+        var resX = document.querySelectorAll('input[type="text"][name="operResX"]');
+        var resY = document.querySelectorAll('input[type="text"][name="operResY"]');
+        for (let i = 0; i <resX.length; ++i){
+            var valueX = parseFloat(resX[i].value);
+            var valueY = parseFloat(resY[i].value);
+            X.push(valueX);
+            Y.push(valueY)
+        }
+        const stringX = X.join('_');
+        const stringY = Y.join('_');
+        $.ajax({
+            url: "/serializeOperationResult",
+            type: "POST",
+            data: ({X: stringX,Y: stringY}),
+            dataType: "text",
+            success: function(response) {
+                const blob = new Blob([response], { type: 'text/plain' });
+                const downloadLink = document.getElementById("downloadLink5");
+                downloadLink.href = URL.createObjectURL(blob);
+                const fileName = prompt('Введите название файла:', 'OperationResult.txt');
+                if (fileName) {
+                    downloadLink.download = fileName;
+                    downloadLink.click();
+                    //const buttonContainer = event.currentTarget.parentElement;
+                }
+            }
+        });
+        closeModal('creationModal',null,null,null,null);
     }
 
     function openCreationModalFromOperations() {
         isOpenedFromOperations = true;
         openModal('creationModal');
     }
-    // Функция для открытия модального окна
+
     function openModal(modalId) {
         document.getElementById(modalId).style.display = 'flex';
     }
 
-    // Функция для закрытия модального окна
     function closeModal(modalId,inputX,inputY,outputsX,outputsY) {
         const modal = document.getElementById(modalId);
 
         if (modalId === 'creationModal') {
-            // Если окно "Создание" закрывается и оно открыто из "Операции", тогда передаем данные в "Операции"
+        // Если окно "Создание" закрывается и оно открыто из "Операции", тогда передаем данные в "Операции"
             if (isOpenedFromOperations) {
                 fillOperationsTable();
+                if (sizeOne === sizeTwo){
+                    sizeOne = 0;
+                    sizeTwo = 0;
+                    generateTableForOperation(outputsX,outputsY);
+                }
                 isOpenedFromOperations = false; // сбрасываем флаг
             } else // Если окно "Создание" закрывается и оно открыто из "Диф", тогда передаем данные в "Диф"
-                if (isOpenedFromDif) {
-                    fillOperationsTableDif(outputsX,outputsY);
-                    isOpenedFromOperations = false; // сбрасываем флаг
-                }
+            if (isOpenedFromDif) {
+                fillOperationsTableDif(outputsX,outputsY);
+                isOpenedFromOperations = false; // сбрасываем флаг
+            }
         }
+        if (modalId === 'mathFunctionModal'){
+            if(MathFromDif){
+                generateTableForMath(inputX,inputY);
+                generateTableForRes(outputsX,outputsY);
+                document.getElementById('mathFunctionModal').style.display = 'none';
+                MathFromDif = false;
+            }
+            else{
+                if(MathFromOper){
+                    generateTableForOperation(inputX,inputY);
+                    if (sizeOne === sizeTwo) generateTableForOperation(outputsX,outputsY);
+                    document.getElementById('mathFunctionModal').style.display = 'none';
+                    MathFromOper = false;
+                }
+                else{
+                    saveToFile('downloadLink8')
+                }
+            }
 
+        }
         modal.style.display = 'none';
         resetMathFunctionModal();
         resetCreationModal();
         if (modalId === 'creationModal') {
-            // После переноса данных в таблицу "Операции", закрываем окно "Создание"
+// После переноса данных в таблицу "Операции", закрываем окно "Создание"
             document.getElementById('creationModal').style.display = 'none';
         }
         resetCreationModal();
     }
 
-    // Функция для создания таблицы
     function generateTable() {
         const numberInput = document.getElementById('numberInput').value;
         const tableBody = document.querySelector('#dataTable tbody');
         tableBody.innerHTML = '';
-
+        if (currentTable % 2 === 0){
+            sizeTwo = numberInput;
+        }
+        else {
+            sizeOne = numberInput;
+        }
         for (let i = 0; i < numberInput; i++) {
             const row = tableBody.insertRow();
             const cellX = row.insertCell(0);
@@ -458,7 +603,47 @@
         }
     }
 
-    // Функция для сброса значений полей в модальном окне "Создание"
+    function generateTableForRes(outputsX,outputsY) {
+        const tableBody = document.querySelector('#difResultFunctionTable tbody');
+        tableBody.innerHTML = '';
+
+        for (var i = 0; i < outputsX.length; i++) {
+            var newRow = tableBody.insertRow();
+            var cellX = newRow.insertCell(0);
+            var cellY = newRow.insertCell(1);
+
+            cellX.innerHTML = '<input type="text" name="resX" value="' + outputsX[i] + '" readonly>';
+            cellY.innerHTML = '<input type="text" name="resY" value="' + outputsY[i] + '" readonly>';
+        }
+    }
+
+    function generateTableForMath(inputX,inputY) {
+        const numberInput = document.getElementById('pointCountInput').value;
+        const tableBody = document.querySelector('#difFunctionTable tbody');
+        tableBody.innerHTML = '';
+
+        for (var i = 0; i < numberInput; i++) {
+            var newRow = tableBody.insertRow();
+            var cellX = newRow.insertCell(0);
+            var cellY = newRow.insertCell(1);
+
+            cellX.innerHTML = '<input type="text" name="resX" value="' + inputX[i] + '" readonly>';
+            cellY.innerHTML = '<input type="text" name="resY" value="' + inputY[i] + '" readonly>';
+        }
+    }
+
+    function generateTableForOperation(outputsX,outputsY) {
+        const tableBody = document.querySelector('#resultFunctionTable tbody');
+        tableBody.innerHTML = '';
+        for (var i = 0; i < outputsX.length; i++) {
+            var newRow = tableBody.insertRow();
+            var cellX = newRow.insertCell(0);
+            var cellY = newRow.insertCell(1);
+            cellX.innerHTML = '<input type="text" name="operResX" value="' + outputsX[i] + '" readonly>';
+            cellY.innerHTML = '<input type="text" name="operResY" value="' + outputsY[i] + '" readonly>';
+        }
+    }
+
     function resetCreationModal() {
         // Сбрасываем значения полей ввода
         document.getElementById('numberInput').value = '';
@@ -467,7 +652,6 @@
         // Другие поля ввода, которые нужно сбросить, добавляйте сюда
     }
 
-    // Функция для сброса значений полей в модальном окне "Создание MathFunction"
     function resetMathFunctionModal() {
         // Сбрасываем значения полей ввода
         document.getElementById('functionSelect').value = 'ConstantFunction';
@@ -477,7 +661,6 @@
         // Другие поля ввода, которые нужно сбросить, добавляйте сюда
     }
 
-    // Функция для сброса значений полей в модальном окне "Операции"
     function resetOperationsModal() {
         // Сбрасываем значения полей в модальном окне "Операции"
         // Добавьте сюда код для сброса значений или очистки интерфейса
@@ -520,7 +703,11 @@
         document.getElementById('fileInput').click();
     }
 
-    // Функция для обработки загруженного файла
+    function openMathFunctionModalFromDif() {
+        MathFromDif = true
+        openModal('mathFunctionModal');
+    }
+
     function handleFileUpload(input) {
         const file = input.files[0];
 
