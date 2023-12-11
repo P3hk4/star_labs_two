@@ -331,7 +331,7 @@
                 const blob = new Blob([response], {type: 'text/plain'});
                 const downloadLink = document.getElementById("mathDownloadLink");
                 downloadLink.href = URL.createObjectURL(blob);
-                const fileName = prompt('Введите название файла:', 'название_файла.txt');
+                const fileName = prompt('Введите название файла:', 'MathFunction.txt');
                 if (fileName) {
                     downloadLink.download = fileName;
                     downloadLink.click();
@@ -568,7 +568,7 @@
                     MathFromOper = false;
                 }
                 else{
-                    saveToFile('downloadLink8')
+                    //saveToFile('downloadLink8')
                 }
             }
 
