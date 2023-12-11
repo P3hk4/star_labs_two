@@ -225,6 +225,7 @@
         <input placeholder="Конец промежутка (xTo)" class="input" type="number" id="xToInput" step="any">
         <br>
         <button class="modal-button"onclick="checkMathFunction()">ОК</button>
+        <a id="mathDownloadLink" style="display: none"></a>
 
     </div>
 </div>
@@ -313,7 +314,28 @@
             dataType: "text",
             success: function (response) {
                 console.log(response);
-                closeModal('mathFunctionModal');
+
+                // Создаем новый Blob (двоичные данные) из данных
+                const blob = new Blob([response], {type: 'text/plain'});
+
+                // Создаем ссылку и прикрепляем Blob к ней
+                const downloadLink = document.getElementById("mathDownloadLink");
+                downloadLink.href = URL.createObjectURL(blob);
+
+                // Запрашиваем у пользователя название файла
+                const fileName = prompt('Введите название файла:', 'название_файла.txt');
+
+                // Если пользователь ввел название файла, продолжаем
+                if (fileName) {
+                    // Устанавливаем атрибут download с указанием названия файла
+                    downloadLink.download = fileName;
+
+                    // Генерируем событие клика на ссылке
+                    downloadLink.click();
+
+                    const buttonContainer = event.currentTarget.parentElement;
+                    closeModal('mathFunctionModal');
+                }
             }
         });
         }
