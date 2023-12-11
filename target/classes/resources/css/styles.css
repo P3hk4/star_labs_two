@@ -1,3 +1,19 @@
+body{
+    background: black;
+}
+
+input::placeholder{
+    color: #7a02c0;
+}
+
+label{
+    color: aliceblue;
+}
+
+h2, h3, p, label{
+    font-family: 'Comfortaa', sans-serif;
+}
+
 .button-container {
     text-align: center;
     margin-top: 200px;
@@ -5,7 +21,7 @@
 
 .button {
     width: 100%;
-
+    font-family: 'Comfortaa', sans-serif;
     height: 40px;
     background-color: #7a02c0;
     color: white;
@@ -33,6 +49,7 @@
     padding: 20px;
     border-radius: 5px;
     text-align: center;
+    color: aliceblue;
 }
 
 .card-container {
@@ -104,4 +121,196 @@
 
 .card:hover::before {
     transform: rotate(-90deg) scaleX(1.34) scaleY(0.77);
+}
+
+.card img {
+    width: 100%; /* Ширина изображения внутри карточки */
+    height: auto; /* Автоматическая высота, чтобы сохранить пропорции */
+    border-radius: 8px; /* Пример радиуса границы для закругленных углов */
+}
+
+.radio-buttons-container {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.radio-button {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+
+.radio-button__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.radio-button__label {
+    display: inline-block;
+    padding-left: 30px;
+    margin-bottom: 10px;
+    position: relative;
+    font-size: 16px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.radio-button__custom {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid  #7a02c0;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.radio-button__input:checked + .radio-button__label .radio-button__custom {
+    transform: translateY(-50%) scale(0.9);
+    border: 5px solid #40c9ff;
+    color: #40c9ff;
+}
+
+.radio-button__input:checked + .radio-button__label {
+    color: #40c9ff;
+}
+
+.radio-button__label:hover .radio-button__custom {
+    transform: translateY(-50%) scale(1.2);
+    border-color: #40c9ff;
+    box-shadow: 0 0 10px  #7a02c0;
+}
+
+.modal-button {
+    background-image: linear-gradient(45deg, #e81cff 0%, #40c9ff  51%, #e81cff  100%)
+}
+
+.modal-button {
+    margin: auto;
+    padding: 15px 30px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    border-radius: 10px;
+    display: block;
+    border: 0px;
+    font-weight: 700;
+    box-shadow: 0px 0px 14px -7px #40c9ff;
+
+}
+
+.modal-button:hover {
+    background-position: right center;
+    /* change the direction of the change here */
+    color: #fff;
+    text-decoration: none;
+}
+
+.modal-button:active {
+    transform: scale(0.95);
+}
+
+.modal-content {
+    background: linear-gradient(60deg, #7a02c0, #000000);
+}
+
+.input {
+    max-width: 190px;
+    height: 30px;
+    border: 2px solid transparent;
+    outline: none;
+    background-image: linear-gradient(45deg, #e81cff 0%, #40c9ff  51%, #e81cff  100%);
+    padding: 5px;
+    transition: .5s linear;
+    font-family: monospace;
+    letter-spacing: 1px;
+    border-radius: 10px;
+
+}
+
+.input:focus {
+    border: 2px solid #f3f1f1;
+    caret-color: #f3f1f1;
+    color: #fff;
+    box-shadow: 4px 4px 10px #faf8f8;
+}
+
+
+.input:focus::placeholder {
+    color: #f3f1f1;
+}
+
+#dataTable th,
+#dataTable td {
+    color: #ffffff;
+    background-image: linear-gradient(45deg, #e81cff 0%, #40c9ff  51%, #e81cff  100%);
+    padding: 8px; /* Добавляем немного отступа для красивого вида */
+    border-radius: 10px;
+}
+
+#dataTable tbody td input, #firstFunctionTable tbody td input, #secondFunctionTable tbody td input, #resultFunctionTable tbody td input,
+#difFunctionTable tbody td input, #difResultFunctionTable tbody td input{
+    background-image: linear-gradient(45deg, #e81cff 0%, #40c9ff 51%, #e81cff 100%);
+    /* Другие стили для input, если необходимо */
+    border-radius: 10px;
+}
+
+#functionSelect, #operationSelect{
+    background: linear-gradient(45deg, #e81cff 0%, #40c9ff 51%, #e81cff 100%);
+
+    color: white; /* Цвет текста */
+    padding: 5px; /* Внутренний отступ */
+    border-radius: 10px;
+}
+
+option{
+    color: #7a02c0;
+}
+
+#difFunctionTable th, #difFunctionTable td,
+#difResultFunctionTable th, #difResultFunctionTable td,
+#firstFunctionTable th, #firstFunctionTable td,
+#secondFunctionTable th, #secondFunctionTable td,
+#resultFunctionTable th, #resultFunctionTable td{
+    background-image: linear-gradient(45deg, #e81cff 0%, #40c9ff 51%, #e81cff 100%);
+    border-radius: 10px;
+    padding: 8px;
+}
+
+.button-container1 {
+    display: flex;
+    gap: 10px; /* Отступ между кнопками */
+    justify-content: center; /* Выравнивание по центру */
+}
+
+.modal-button1 {
+    background-image: linear-gradient(45deg, #e81cff 0%, #40c9ff  51%, #e81cff  100%);
+    padding: 15px 30px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    border-radius: 10px;
+    border: 0px;
+    font-weight: 700;
+    box-shadow: 0px 0px 14px -7px #40c9ff;
+}
+
+.modal-button1:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+}
+
+.modal-button1:active {
+    transform: scale(0.95);
 }
