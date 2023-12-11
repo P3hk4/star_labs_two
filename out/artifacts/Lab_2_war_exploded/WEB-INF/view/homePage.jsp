@@ -91,7 +91,7 @@
 
 
 
-        <button class="modal-button" onclick="saveToFile('downloadLink2')">Сохранить</button>
+        <button class="modal-button" onclick="serializeDifFunction()">Сохранить</button>
 
 
         <a id="downloadLink2" style="display: none"></a>
@@ -299,7 +299,6 @@
                         var result = array.map(function(subArray) {
                             return subArray.map(Number); // Преобразование каждого элемента в числовой тип
                         });
-                        console.log(result);
                         closeModal('mathFunctionModal');
                         }
             });
@@ -314,27 +313,21 @@
             dataType: "text",
             success: function (response) {
                 console.log(response);
-
                 // Создаем новый Blob (двоичные данные) из данных
                 const blob = new Blob([response], {type: 'text/plain'});
-
                 // Создаем ссылку и прикрепляем Blob к ней
                 const downloadLink = document.getElementById("mathDownloadLink");
                 downloadLink.href = URL.createObjectURL(blob);
-
                 // Запрашиваем у пользователя название файла
                 const fileName = prompt('Введите название файла:', 'название_файла.txt');
-
                 // Если пользователь ввел название файла, продолжаем
                 if (fileName) {
                     // Устанавливаем атрибут download с указанием названия файла
                     downloadLink.download = fileName;
-
                     // Генерируем событие клика на ссылке
                     downloadLink.click();
-
                     const buttonContainer = event.currentTarget.parentElement;
-                    closeModal('mathFunctionModal');
+                    closeModal('mathFunctionModal',null,null,null,null);
                 }
             }
         });
@@ -355,15 +348,12 @@
                 }
                 const stringX = X.join('_');
                 const stringY = Y.join('_');
-                console.log(stringX);
-                console.log(stringY);
                 $.ajax({
                     url: "/differentiateFunction",
                     type: "POST",
                     data: ({X: stringX,Y: stringY}),
                     dataType: "text",
                     success: function(response) {
-                        alert(response);
                         let arr = response.split('|');
                         let arrayXString = arr[0].split('_');
                         let arrayYString = arr[1].split('_');
@@ -373,10 +363,48 @@
                             arrayX[i] = parseFloat(arrayXString[i]);
                             arrayY[i] = parseFloat(arrayYString[i]);
                         }
-                        closeModal('creationModal',arrayX,arrayY);
+                        closeModal('creationModal',null,null,arrayX,arrayY);
                     }
                 });
             }
+            else if (isOpenedFromOperations){
+
+            } else {
+
+
+            }
+    }
+
+    function serializeDifFunction(){
+        var X = []; var Y = [];
+        var inputsX = document.querySelectorAll('input[type="text"][name="resX"]');
+        var inputsY = document.querySelectorAll('input[type="text"][name="resY"]');
+        for (let i = 0; i <inputsX.length; ++i){
+            var valueX = parseFloat(inputsX[i].value);
+            var valueY = parseFloat(inputsY[i].value);
+            X.push(valueX);
+            Y.push(valueY)
+        }
+        const stringX = X.join('_');
+        const stringY = Y.join('_');
+        $.ajax({
+            url: "/serializeTabulatedFunction",
+            type: "POST",
+            data: ({X: stringX,Y: stringY}),
+            dataType: "text",
+            success: function(response) {
+                const blob = new Blob([response], { type: 'text/plain' });
+                const downloadLink = document.getElementById("downloadLink2");
+                downloadLink.href = URL.createObjectURL(blob);
+                const fileName = prompt('Введите название файла:', 'название_файла.txt');
+                if (fileName) {
+                    downloadLink.download = fileName;
+                    downloadLink.click();
+                    const buttonContainer = event.currentTarget.parentElement;
+                }
+                closeModal('creationModal',null,null,null,null);
+            }
+        });
     }
 
     function openCreationModalFromOperations() {
@@ -391,7 +419,6 @@
     // Функция для закрытия модального окна
     function closeModal(modalId,inputX,inputY,outputsX,outputsY) {
         const modal = document.getElementById(modalId);
-
 
         if (modalId === 'creationModal') {
             // Если окно "Создание" закрывается и оно открыто из "Операции", тогда передаем данные в "Операции"
