@@ -582,7 +582,6 @@
                 if (fileName) {
                     downloadLink.download = fileName;
                     downloadLink.click();
-                    //const buttonContainer = event.currentTarget.parentElement;
                 }
             }
         });
@@ -591,8 +590,6 @@
 
     function closeModal(modalId,inputX,inputY,outputsX,outputsY, inputX1,inputY1) {
         const modal = document.getElementById(modalId);
-
-
         if (modalId === 'creationModal') {
 // Если окно "Создание" закрывается и оно открыто из "Операции", тогда передаем данные в "Операции"
             if (isOpenedFromOperations) {
@@ -716,7 +713,6 @@
             sizeOne = numberInput;
             tableBody.innerHTML = '';
 
-            ////
             for (var i = 0; i < numberInput; i++) {
                 var newRow = tableBody.insertRow();
                 var cellX = newRow.insertCell(0);
@@ -726,14 +722,11 @@
                 cellY.innerHTML = '<input type="text" name="resY" value="' + inputY[i] + '" readonly>';
             }
 
-            ////
         }
         else {
             const tableBody = document.querySelector('#secondFunctionTable tbody');
-            sizeOne = numberInput;
+            sizeTwo = numberInput;
             tableBody.innerHTML = '';
-
-            ////
 
             for (var i = 0; i < numberInput; i++) {
                 var newRow = tableBody.insertRow();
@@ -744,17 +737,7 @@
                 cellY.innerHTML = '<input type="text" name="resY" value="' + inputY[i] + '" readonly>';
             }
 
-            ////
-
         }
-        // for (var i = 0; i < numberInput; i++) {
-        //     var newRow = tableBody.insertRow();
-        //     var cellX = newRow.insertCell(0);
-        //     var cellY = newRow.insertCell(1);
-        //
-        //     cellX.innerHTML = '<input type="text" name="resX" value="' + inputX[i] + '" readonly>';
-        //     cellY.innerHTML = '<input type="text" name="resY" value="' + inputY[i] + '" readonly>';
-        // }
     }
 
     function resetCreationModal() {
