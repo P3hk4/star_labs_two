@@ -69,12 +69,9 @@
         <div class="button-container1">
             <button class="modal-button1" onclick="openCreationModalFromDif()">Открыть Создание</button>
             <button class="modal-button1" onclick="openMathFunctionModalFromDif()">Открыть MathFunction</button>
-            <button class="modal-button1" onclick="openFileInput('diff')">Загрузить</button>
+            <button class="modal-button1" onclick="openFileInput('fileInput','diff')">Загрузить</button>
             <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload(this)">
-            <button class="modal-button1" onclick="saveToFile('downloadLink1')">Сохранить</button>
         </div>
-
-        <a id="downloadLink1" style="display: none"></a>
         <br>
         <h3>Результат</h3>
 
@@ -127,12 +124,10 @@
         <div class="button-container1">
             <button class="modal-button1" onclick="openCreationModalFromOperations()">Создать TabulatedFunction</button>
             <button class="modal-button1" onclick="openMathFunctionModalFromOper()">Создать MathFunction</button>
-            <button class="modal-button1" onclick="openFileInput('fileInput1')">Загрузить</button>
+            <button class="modal-button1" onclick="openFileInput('fileInput1','oper')">Загрузить</button>
             <input type="file" id="fileInput1" style="display: none;" onchange="handleFileUpload(this)">
-            <button class="modal-button1" onclick="saveToFile('downloadLink3')">Сохранить</button>
         </div>
 
-        <a id="downloadLink3" style="display: none"></a>
         <br>
         <h3>Вторая функция</h3>
 
@@ -150,12 +145,9 @@
         <div class="button-container1">
             <button class="modal-button1" onclick="openCreationModalFromOperations()">Создать TabulatedFunction</button>
             <button class="modal-button1" onclick="openMathFunctionModalFromOper()">Создать MathFunction</button>
-            <button class="modal-button1" onclick="openFileInput('fileInput2')">Загрузить</button>
+            <button class="modal-button1" onclick="openFileInput('fileInput2','oper')">Загрузить</button>
             <input type="file" id="fileInput2" style="display: none;" onchange="handleFileUpload(this)">
-            <button class="modal-button1" onclick="saveToFile('downloadLink4')">Сохранить</button>
         </div>
-
-        <a id="downloadLink4" style="display: none"></a>
         <br>
         <h3>Результат</h3>
 
@@ -186,7 +178,7 @@
         <span onclick="closeModal('creationModal',null,null,null,null,null,null); resetCreationModal();" style="float: right; cursor: pointer;">&times;</span>
         <h2>Создание TabulatedFunction</h2>
         <input placeholder="Количество точек" class="input" name="text" type="number" id="numberInput">
-        <button class="modal-button" onclick="generateTable()">Ок</button><br>
+        <button class="modal-button" onclick="checkTabulatedFunction()">Ок</button><br>
 
         <table id="dataTable" style="width: 100%;">
             <thead>
@@ -554,13 +546,13 @@
                 }
             }
         });
-        closeModal('creationModal',null,null,null,null);
+        closeModal('creationModal',null,null,null,null,null,null);
     }
 
     function deserializeDiffFunction(str){
 
         $.ajax({
-            url: "/deserializeTabulatedFunction",
+            url: "/deserializeAndDiffTabulatedFunction",
             type: "POST",
             data: ({str: str}),
             dataType: "text",
@@ -569,12 +561,12 @@
                 let FuncArray = arr[0].split('|');
                 let diffFuncArray = arr[1].split('|');
                 let funcXString = FuncArray[0].split('_');
-                let funcSecYString = FuncArray[1].split('_');
+                let funcYString = FuncArray[1].split('_');
                 let arrayFuncX = [];
                 let arrayFuncY = [];
                 for (let i = 0; i < funcXString.length; i++){
                     arrayFuncX[i] = parseFloat(funcXString[i]);
-                    arrayFuncY[i] = parseFloat(funcSecYString[i]);
+                    arrayFuncY[i] = parseFloat(funcYString[i]);
                 }
                 let diffXString = diffFuncArray[0].split('_');
                 let diffYString = diffFuncArray[1].split('_');
@@ -623,6 +615,79 @@
             }
         });
         closeModal('creationModal',null,null,null,null);
+    }
+
+    function deserializeOperationFunction(str){
+            if (firstOperand == null) {
+                $.ajax({
+                    url: "/deserializeTabulatedFunction",
+                    type: "POST",
+                    data: ({str: str}),
+                    dataType: "text",
+                    success: function(response) {
+                        firstOperand = response;
+                        let FuncArray = response.split('|');
+                        let funcXString = FuncArray[0].split('_');
+                        let funcYString = FuncArray[1].split('_');
+                        let arrayFuncX = [];
+                        let arrayFuncY = [];
+                        for (let i = 0; i < funcXString.length; i++){
+                            arrayFuncX[i] = parseFloat(funcXString[i]);
+                            arrayFuncY[i] = parseFloat(funcYString[i]);
+                        }
+                        document.getElementById('pointCountInput').value = arrayFuncX.length;
+                        generateTableForMathOperation(arrayFuncX,arrayFuncY);
+                        currentTable++;
+                    }
+                });
+                isOpenedFromOperations = false;
+            } else {
+                $.ajax({
+                    url: "/deserializeTabulatedFunction",
+                    type: "POST",
+                    data: ({str: str}),
+                    dataType: "text",
+                    success: function(response) {
+                        let FuncArray = response.split('|');
+                        let funcXString = FuncArray[0].split('_');
+                        let funcYString = FuncArray[1].split('_');
+                        let arrayFuncX = [];
+                        let arrayFuncY = [];
+                        for (let i = 0; i < funcXString.length; i++){
+                            arrayFuncX[i] = parseFloat(funcXString[i]);
+                            arrayFuncY[i] = parseFloat(funcYString[i]);
+                        }
+                        document.getElementById('pointCountInput').value = arrayFuncX.length;
+                        generateTableForMathOperation(arrayFuncX,arrayFuncY);
+                        calculateOperationFileResult(response);
+                    }
+                });
+
+            }
+    }
+
+    function calculateOperationFileResult(secondOperand) {
+        let operationType = document.getElementById("operationSelect").value;
+        $.ajax({
+            url: "/calculateOperationResult",
+            type: "POST",
+            data: ({
+                operationType: operationType,firstOperand:firstOperand,secondOperand:secondOperand}),
+            dataType: "text",
+            success: function (response) {
+                let arr = response.split('|');
+                let arrayXString = arr[0].split('_');
+                let arrayYString = arr[1].split('_');
+                let arrayX = [];
+                let arrayY = [];
+                for (let i = 0; i < arrayXString.length; i++){
+                    arrayX[i] = parseFloat(arrayXString[i]);
+                    arrayY[i] = parseFloat(arrayYString[i]);
+                }
+                firstOperand = null;
+                generateTableForOperation(arrayX,arrayY);
+            }
+        });
     }
 
     function closeModal(modalId,inputX,inputY,outputsX,outputsY,inputX1,inputY1) {
@@ -679,18 +744,35 @@
         const numberInput = document.getElementById('numberInput').value;
         const tableBody = document.querySelector('#dataTable tbody');
         tableBody.innerHTML = '';
-        if (currentTable % 2 === 0){
+        if (currentTable % 2 === 0) {
             sizeTwo = numberInput;
-        }
-        else {
+        } else {
             sizeOne = numberInput;
         }
+
+        let prevXValue = null; // Добавляем переменную для хранения предыдущего значения X
+
         for (let i = 0; i < numberInput; i++) {
             const row = tableBody.insertRow();
             const cellX = row.insertCell(0);
             const cellY = row.insertCell(1);
 
-            cellX.innerHTML = `<input type="number" name="inputX" step="any">`;
+            const inputX = document.createElement('input');
+            inputX.type = 'number';
+            inputX.name = 'inputX';
+            inputX.step = 'any';
+
+// Проверка, что текущее значение X больше предыдущего
+            inputX.addEventListener('input', function () {
+                const currentXValue = parseFloat(inputX.value);
+                if (prevXValue !== null && currentXValue <= prevXValue) {
+                    alert('Значение X должно быть больше предыдущего значения!');
+                    inputX.value = ''; // Очистим поле в случае ошибки
+                }
+                prevXValue = currentXValue;
+            });
+
+            cellX.appendChild(inputX);
             cellY.innerHTML = `<input type="number" name="inputY" step="any">`;
         }
     }
@@ -719,8 +801,8 @@
             var cellX = newRow.insertCell(0);
             var cellY = newRow.insertCell(1);
 
-            cellX.innerHTML = '<input type="text" name="resX" value="' + inputX[i] + '" readonly>';
-            cellY.innerHTML = '<input type="text" name="resY" value="' + inputY[i] + '" readonly>';
+            cellX.innerHTML = '<input type="text" name="mathX" value="' + inputX[i] + '" readonly>';
+            cellY.innerHTML = '<input type="text" name="mathY" value="' + inputY[i] + '" readonly>';
         }
     }
 
@@ -770,6 +852,18 @@
         }
     }
 
+    function checkTabulatedFunction() {
+        let inputValue = document.getElementById("numberInput").value;
+        if (inputValue < 2){
+            alert("Количество точек должно быть больше 1!");
+        } else
+        if (!Number.isInteger(+inputValue)){
+            alert("Количество точек должно быть целым");
+        } else {
+            generateTable();
+        }
+    }
+
     function resetCreationModal() {
         // Сбрасываем значения полей ввода
         document.getElementById('numberInput').value = '';
@@ -813,10 +907,12 @@
         openModal('creationModal');
     }
 
-    function openFileInput(field) {
-        document.getElementById('fileInput').click();
+    function openFileInput(id,field) {
+        document.getElementById(id).click();
         if (field === "diff"){
             isOpenedFromDif = true;
+        } else if (field == "oper"){
+            isOpenedFromOperations = true;
         }
     }
 
@@ -861,6 +957,8 @@
                  var fileContent = e.target.result; // Получаем содержимое файла в виде строки
                  if (isOpenedFromDif){
                      deserializeDiffFunction(fileContent);
+                 } else if (isOpenedFromOperations){
+                     deserializeOperationFunction(fileContent);
                  }
              };
              reader.readAsText(file); // Читаем файл как текстовую строку
