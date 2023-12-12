@@ -72,6 +72,23 @@ public class WebController {
         return functionService.serializeTabulatedFunction(parsingService.parseStringToDoubleArray(x),parsingService.parseStringToDoubleArray(y));
     }
 
+
+    @PostMapping("/deserializeAndDiffTabulatedFunction")
+    @ResponseBody
+    public String deserializeAndDiffTabulatedFunction(@RequestParam("str") String str){
+        TabulatedFunction TF = functionService.deserializeFunction(str);
+        TabulatedFunction DTF = functionService.differentiateFunction(TF);
+        return parsingService.parseTwoTabulatedFunctionToString(TF,DTF);
+    }
+
+    @PostMapping("/deserializeTabulatedFunction")
+    @ResponseBody
+    public String deserializeTabulatedFunction(@RequestParam("str") String str){
+        TabulatedFunction TF = functionService.deserializeFunction(str);
+        return parsingService.parseTabulatedFunctionToString(TF);
+    }
+
+
     @PostMapping("/getMathFunction")
     @ResponseBody
     public String getMathFunction(@RequestParam("functionSelect") String function, @RequestParam("pointCount") int count,
